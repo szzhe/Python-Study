@@ -53,3 +53,4 @@
 	元素函数
 		count计算tuple中存在相同元素的数量
 		index获取元素在tuple中的位置
+        
