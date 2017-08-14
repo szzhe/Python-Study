@@ -30,4 +30,26 @@
 		判断元素是否在tuple中存储
 			>>> 1 in nums
 			>>> 2 not in nums
-		
+		元素运算
+			加(+)
+				必须为两个tuple相加
+			乘(*)
+				必须一个为整数
+	元组切片
+		按照规则获取tuple中一部分元素生成新的tuple
+			tuple[start:end:step]
+			tuple[::step]
+			tuple[start:end]
+			tuple[:end]
+			tuple[start:]
+			tuple[:]
+			
+	元组的不可变性
+		不可变指的是元组的内元素的值不可变
+			>>>nums = (1,2,[4,5])
+			>>>nums[2] = [7,8,9]
+		对于list等复杂数据类型的为引用方式存储数据类型的地址，其地址不可变，但内部数据可变
+	
+	元素函数
+		count计算tuple中存在相同元素的数量
+		index获取元素在tuple中的位置
