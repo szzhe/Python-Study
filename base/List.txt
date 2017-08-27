@@ -1,5 +1,10 @@
 
 【列表】
+    定义：一种数据结构，一个序列，用于顺序的存储数据
+    序列在python中是最基本的数据结构。序列中的每个元素都分配一个数字，就是它的位置，也叫索引。
+    
+    在python3中，range函数是一个可迭代对象
+    
     使用中括号包含
     每个元素之间使用逗号分隔
     可包含任意数据类型
@@ -67,33 +72,59 @@
                     切片元素的数量小于[v_1,...,v_n]数量
                         按照顺序替换切片中的元素，赋值list中多余的元素则添加到切片最右索引之后  >>>nums = list(range(10)) >>>del nums[2] >>>nums[2:7] = [2,3]
                                                                                                 >>>nums = list(range(10)) >>>del nums[2] >>>nums[2:7] = []
-                
-    列表函数
+
+    列表函数 @ 返回值为None，大多数情况都是对原对象作原地修改操作
+    
+    增加：
         append 添加元素到list最右侧
             @ append 参数类型：任意类型；返回值：无；功能：将参数中元素整体追加到list最右侧
         extend 将一个[[可遍历序列iterable]]中的所有元素追加到list后(用新列表扩展原来的列表)
             @ extend 参数类型：可遍历；返回值：无；功能：将可遍历参数中的每个元素追加到list最右侧
-        clear 清空list中的元素
-            @ clear 参数类型:无；返回值：无；功能：清空list
-        copy 复制list中的所有元素到新list中并返回
-            @ copy 参数类型：无；返回值：list；功能：赋值list中元素并返回
+            @ 返回值：None；原地修改
+        insert 在list指定位置添加元素
+            @ 语法：L.insert(index,object) -- insert object before index
+            # 如出现越界的情况，会将结果追加在lst的最后
+            @ 无论index为正数或是负数，index insert方法，往index左边的位置添加元素
+
+    查询：
         count 计算list中存在相同元素的数量
             # 如果查询的元素在list中不存在，不报错，返回0
             @ count 参数类型：任意类型；返回值：Int；功能：获取元素在list中出现的次数
         index 获取元素在list中的位置
             # 返回a在列表中第一次出现的位置，默认搜索整个列表 >>> print(nums1.index(2))
             # 返回a在指定切片内第一次出现的位置 >>> print(nums1.index(4,6,8))
+            # start和end参数是可以为负数的，但是在查找过程中还是从做往右的顺序
+                >>> list.index(2,-1) >>> ValueError: 2 is not in list
+                >>> list.index(2,-4,-1) >>> 3
             @ index 参数类型：任意类型；返回值：int；功能：获取元素在list中的位置，不存在则报错
-        insert 在list指定位置添加元素
+
+    删除：
         pop 弹出list中指定位置的元素(默认最右侧)
             @ pop 参数类型：整数；返回值：任意；功能：根据索引删除list中元素，并返回，若索引在list中不存在则报错
         remove 移除list中指定的元素
             @ remove 参数类型：任意；返回值：无；功能：从list中删除指定的值，若值不存在，则报错
-        reverse 对list中元素进行反转
+        clear 清空list中的元素
+            @ clear 参数类型:无；返回值：无；功能：清空list
+
+    修改：
+        reverse 对list中元素进行反转；返回None，原地修改
             @ reverse 参数类型：无；返回值：无；功能：对list中元素进行反转
-        sort 对list中元素进行排序 
+        sort 对list中元素进行排序；返回None，原地修改
             @ sort 参数类型：排序规则，是否反转；返回值：无；功能：对list中元素进行排序
-            # L.sort(key=None, reverse=False)
+            # L.sort() 1-6 默认：key=None, reverse=False
+            # L.sort(reverse=True) 逆序排序 6-1
+
+    其他：
+        copy 复制list中的所有元素到新list中并返回
+            @ copy 参数类型：无；返回值：list；功能：赋值list中元素并返回
+            >>> l = [1,[2,3],4] >>> l4 = l.copy()  >>> l4[1][1] = 100 >>> l4 & [1,[2,100],4]
+                copy称为浅拷贝，只能拷贝第一层，id()不同。
+                如果列表中扔存在有列表lst1，copy()的时候，lst1实际为赋值引用[=],这时修改lst1为2个list一起修改
+            @ from copy import deepcopy 深拷贝
+            >>> l = [1,[2,3],4] >>> l5 = deepcopy(l)  >>> l5[1][1] = 1000 >>> l5 & [1,[2,1000],4] & [1,[2,100],4]
+            
+    根据值操作：reverse index count
+    根据索引操作: pop index
         
     帮助函数
         查看数据类型可使用的函数{成员方法、成员变量}
@@ -107,4 +138,47 @@
     堆栈 EG：函数调用的先后关系
         先进后出
         list.append + list.pop #默认删除list中最右侧数据
+        
+    函数展现：
+        
+    def _index(lst,value,start=0,end=0):
+        i=start
+        for x in lst[start:end]:
+            if x == value:
+                return i
+            i += 1
+        raise ValueError()
+
+    _index(lst,2,1,4)  #为正数集验证结果
+    
+    def _count(lst,value):
+        c = 0
+        for x in lst:
+            if x == lst:
+                c += 1
+        return c
+    
+    _count(lst,2)
+    
+    def _copy(lst):
+        tmp = []
+        for in in lst:
+            tmp.append(i)
+        return tmp
+    
+    @ index 和 count 方法的时间复杂度都是O(n)
+    @ 线性复杂度：效率和数据规模呈线性相关
+    
+    @ append 和 insert 的效率
+        append 的时间复杂度是0(1)，常数时间，效率和数据的规模无关
+        insert 的时间复杂度是0(n)，线性时间，效率和数据规模呈线性相关
+        
+    @ pop不传递index参数，时间复杂度是0(1)
+      pop传递index参数，时间复杂度是0(n)
+      pop根据索引删除元素，并且返回删除的元素
+    @ remove 根据值删除元素，返回None
+        
+    时间复杂度：定性描述一个算法的效率，用来做分析的，不是来计算的
+    
+    
             

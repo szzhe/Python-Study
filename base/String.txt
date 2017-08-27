@@ -1,0 +1,178 @@
+
+    三个引号(单双)可以定义多行字符串
+    
+    转义
+        >>> path = 'C:\Project\course\magedu\'
+        ↓↓↓ path = 'C:\Project\course\magedu\\'
+        如出现路径是变量获取到的，无法判断是否有换行符，采用下述方式：
+        >>> path = 'C:\Project\course\magedu\'.replace('\\','\\') replace参数中前者表示要转义的对象，后者表示用何种方式输出
+        --- 'C:\\Project\\course\\magedu'
+    r'' 表示是一段自然字符串
+        >>> path =r'C:\Project\course\magedu\'
+    u'' 表示unicode字符串
+    常用转义：
+        \a 响铃符 --- windows下cmd命令行，敲击print("\a")
+        \r 回车符，将当前位置引到本行开头
+            >>> print("a\rb") --- b
+        \n 换行符，将当前位置引到下一行开头
+            >>> print("a\rb") --- a 
+                                  b
+            在windows上标记为\r\n;在linux上标记是\n
+        \t 跳到下一个TAB位置
+        \f 换页符，将当前位置引到下页开头
+        \b 退格符，将当前位置移到前一列
+        \O 空字符(NULL)
+        
+    字符串的操作 
+
+    着重点：
+        -''.join(L)
+        --split
+        --rsplit
+        --splitlines
+        --partition
+        --rpartition
+    
+        join 返回结果原地不做修改
+            *** s = "miracle,young,papapa"
+            >>> new_s = ",".join(s)
+        split 返回结果原地不做修改 
+            语法：S.split(sep=None,maxsplit=-1) sep参数为空时默认以" "方式分割；maxsplit标记分隔次数，-1为分割到不能再分割
+                  默认为split()的时候，\t \n “ ”均会被过滤掉 
+            >>> new_s = s.split(',')
+                ["miracle","young","papapa"]
+            
+            *** s1 = "  pa papa    pa"
+            >>> new_s1 = s1.split(" ")  以一个空格作为基准分隔
+                ['', '', 'pa', 'pa', 'p', '', '', 'papapa', '']
+            >>> new_s2 = sl.split()  默认以所有空格作为分隔
+                ["pa","pa","p","papapa"]
+            
+            >>> s1.split("pa") 
+                split的分隔符，可以是任意多个字符串
+    {
+        s = "  pa papa    pa"
+
+        def _split(s,sep,maxsplit):
+            ret = []
+            tmp = []
+            i = 0
+            for c in s:
+                if c != sep:
+                    tmp.append(c)
+                else:
+                    i += 1
+                    ret.append("".join(tmp))
+                    tmp.clear()
+                if i >= maxsplit and maxsplit > 0:
+                    return ret
+            return ret
+
+        sss = _rsplit(s, " ", -1)
+        print(sss)
+    }
+        
+        rsplit[从右开始分割]
+            s.rsplit() 和 s.split() 结果一样
+            s.rsplit(" ",1) 参数方法一样
+            >>> s1.rsplit("pa") 
+                rsplit的分隔符，可以是任意多个字符串
+            
+    {
+        s = "  pa papa    pa"
+
+        def _rsplit(s,sep,maxsplit):
+            ret = []
+            tmp = []
+            i = 0
+            for c in reversed(s):
+                if c != sep:
+                    tmp.append(c)
+                else:
+                    i += 1
+                    ret.append("".join(reversed(tmp)))
+                    tmp.clear()
+                if i >= maxsplit and maxsplit > 0:
+                    return reversed(ret)
+            return reversed(ret)
+            
+        sss = list(_rsplit(s, " ", 1))
+        print(sss)
+    }
+                
+        splitlines[按行分割，适用场景：分析日志]
+            
+        partition
+            @ 语法：S.partition(sep) -> (head,sep,tail)
+            >>> s = 'host = 127.0.0.1'
+            >>> s.partition("=")
+                ('host','=','127.0.0.1')
+        rpartition
+        
+    {
+        s = 'a=b=c'
+        def _partion(s,sep):
+            if s == "" :
+                return '','',''
+            tmp = s.split(sep,maxsplit=1)
+            if(len(tmp)==2):
+                return tmp[0],sep,tmp[1]
+            elif len(tmp) == 1:
+                return tmp[0],sep,''
+            elif len(tmp) == 0:
+                return '',sep,''
+        sss = _partion(s,'=')
+        print(sss)
+    }
+    
+    ### 大小写转换
+        s.supper() 大写
+        s.lower() 小写
+        s.swapcase() 大小写互换
+        
+    ### 排版 
+        *** s = "aa bb cC"
+        s.title() 驼峰，语句中所有出现的单词，首字母大写 Aa Bb Cc
+        s.capitalize() 语句中，首个单词首个字母大写，已有的词组中的大写转换为小写 Aa bb cc
+        s.center() 两边填充
+            语法：S.center(width[,fillchar]) -> str
+            >>> s.center(100,#) -- ‘00000szzhe0000’
+        s.zfill() 左填充
+            语法：S.zfill(width) -> str
+            >>> s.zfill(100) -- '0000000000szzhe'
+            >>> str(1234).zfill(11) -- 00000001234 
+                int(str(1234).zfill(11)) -- 1234
+        '\t'.expandtabs()
+            --- '     '
+            
+    ### 修改
+    
+        s.replace() 
+            语法：S.replace(old,new[,count]) -> str 
+            *** s = 'abcdabcd' 
+            >>> print(s.replace('c','X')) --- 'abXdabXd'
+            >>> print(s) --- 'abcdabcd' #返回结果集，原地不做修改
+            >>> print(s.replace('c','X'),1) --- 'abXdabcd'
+            >>> print(s.replace('abc','XYZ')) --- 'XYZdXYZd' # 多个字符修改
+        s.strip()
+            语法：S.strip([chars]) -> str 默认去掉前后的空格
+            *** s = '  pa pa    pa '
+            >>> s.strip()     --- 'pa pa    pa'
+            >>> s.strip(" ")  --- 'pa pa    pa'
+            >>> s.strip("  ") --- 'pa pa    pa'
+            *** s = 'ababbcabed'
+            >>> s.strip('ab') --- 'cabed' # chars中任意符合的都会被去除
+        s.lstrip()
+            >>> s.lstrip('ad') --- 'babbcabed'
+        s.rstrip()
+            >>> s.rstrip('ad') --- 'ababbcabe'
+        s.ljust()
+            >>> s.ljust(100)  --- 'ababcabed                   '
+                s.ljust(100,'#') --- 'ababcabed####################'
+        s.rjust()
+            >>> s.rjust(100) --- '                     ababcabed'
+                s.rjust(100,'#') --- '####################ababcabed'
+            
+    ### 查找
+        
+        s.find() # 返回第一个匹配的字符串，返回的值是子串的第一个索引

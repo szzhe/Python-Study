@@ -1,0 +1,108 @@
+
+Centos7下载地址：http://www.centoscn.com/CentosSoft/iso/2016/1214/8276.html
+
+【一】安装pyenv步骤
+1.yum install -y git
+2.curl -L https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | bash
+3.编辑/root/.bash_profile
+export PATH="~/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$( pyenv virtualenv-init -)"
+4.source .bash_profile 或 source ~/.bash_profile
+-------------------------------------【使用pyenv安装python版本】------------------------------------------------
+1.yum -y install gcc make patch gdbm-devel openssl-devel sqlite-devel readline-devel zlib-devel bzip2-devel
+2.pyenv install 3.6.2
+
+Python-3.6.2.tar.xz下载失败的处理办法
+    1.将Python-3.6.2.tar.xz文件上传到/root/.pyenv/cache[cache目录需要手动创建]
+    2.pyenv install 3.6.2 -v
+    3.pyenv versions 显示当前pyenv 的所有可用版本
+      python -V 查看当前python版本
+      which python 查看当前python版本的路径
+
+3.  1)cd /home/workspace/magedu
+    2)pyenv virtualenv 3.6.2 magedu_test 安装3.6.2的虚拟环境，名称是megedu
+------------------------------------【pyenv global，shell，local的使用】---------------------------------------
+1.pyenv gloable system 将全局版本切换成system版本
+cd /
+pyenv versions
+2.cd /tmp
+  pyenv local magedu 将当前目录切换到magedu环境
+  pyenv versions
+3.pyen shell system 将当前shell 切换到system目录
+
+4..python-version
+pyenv shell > pyenv local > pyenv gloable
+
+5.pyenv uninstall magedu 删除magedu环境
+
+6.pyenv update
+
+http://www.cnblogs.com/wswang/p/5467959.html
+----------------------------------------【本地调用linux下pycharm】-----------------------------------------
+
+1.mobaxterm
+连接本机虚拟机 连接IP：192.168.44.128
+2.cd /usr/local/src下面，上传
+    IntelliJIDEALicenseServer(0.0.0.0_41017).zip
+    pycharm-professional-2017.2.1.tar.gz
+
+1.unzip In (tab补全)
+1)unzip IntelliJIDEALicenseServer(0.0.0.0_41017).zip
+2)mv In(我们自己的版本) /usr/local/program
+3)chmod +x Inte(自己的版本)
+4)./In(自己的版本)  获取信息** You can use http://127.0.0.1:41017 as license server    **
+
+2.tar zxvf pycharm(tab 补全)
+1)tar zxvf pycharm-professional-2017.2.1.tar.gz
+2)mv pycharm /usr/local/program
+3)rm -rf * 删除src目录下所有的文件
+  rm -rf Inter* 删除src目录下以Inter开头的所有文件
+4)cd /usr/local/program/pycharm-2017.2/bin
+5)./pycharm.sh
+
+1)/home/workspace/magedu，新建pycharm_learn
+2)pycharm->Open File or Project，定位到上面的pycharm_learn目录中去
+3)File->Settings->Project:pycharm_learn->Project Interpreter
+    Add local，选择/root/.pyenv/versions/magedu_3.6/bin，选择python文件 [选择magedu_3.6虚拟环境]
+
+----------------------------------------【pyenv隔离环境】----------------------------------------------
+
+1.进入某个virtualenv环境下
+pip freeze 显示当前环境下使用了哪些模块
+2.进入/home目录下，继续pip freeze，显示pip:command not found 因为centos7不自带pip
+3.实际操练：
+  cd /home/workspace/magedu/pycharm_learn
+  pip freeze > requirement.txt    导出环境所需模块
+  cat requirement.txt
+  
+  pyenv virtualenv 3.6.2 magedu_pip
+  pyenv local magedu_pip
+  pip freeze
+  pip install -r requirement.txt    安装所需模块
+  注：出现安装失败的情况下，通过vim requirement.txt注释掉失败的文件名
+  
+----------------------------------------【jupyter】----------------------------------------------
+1.进入pycharm_learn虚拟环境下
+2.mkdir ~/.pip
+  vim ~/.pip/pip.conf
+输入：
+[global]
+index-url=http://mirrors.aliyun.com/pypi/simple
+trusted-host = mirrors.aliyun.com
+3.#pip install --upgrade pip
+  pip install jupyter
+4.jupyter --version
+  >>>4.3.0
+5.前提：在pycharm_learn虚拟环境同级目录，新建notes目录
+  jupyter notebook --ip=0.0.0.0 --no-browser --notebook-dir=../notes/ --allow-root
+  获取网址：http://192.168.44.128:8888/?token=0d93476e125d8e58bcf8d27b17fb720adfe2c6cae7622888  随着每次启动,token会发生变化
+  
+  'sha1:60fa2f570aa5:93d804cfa7ec880e6b47f8d8fc2e7c111602a946'
+
+  如果发现无法访问，一般是centos系统防火墙没有关闭，使用以下命令进行关闭
+systemctl stop firewalld.service #停止firewall
+systemctl disable firewalld.service #禁止firewall开机启动
+firewall-cmd --state #查看默认防火墙状态（关闭后显示notrunning，开启后显示running）
+参考：http://blog.csdn.net/u010694764/article/details/76862854
+----------------------------------------【ipython】----------------------------------------------
