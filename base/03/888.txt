@@ -1,0 +1,73 @@
+
+
+>>> lst = list(range(10))
+>>> lst
+[0,1,2,3,4,5,6,7,8,9]
+
+>>> lst[3:8:2]
+[3,5,7]
+
+>>> def _slice(lst,start=0,stop=0,step=1):
+    if stop = 0:
+        stop = len(lst)
+        
+    if step < 0:
+        _start = start * -1
+        _stop = stop * -1
+    else:
+        _start = start
+        _stop = stop
+    
+    current = start
+    ret = []
+    
+    while current >= _start and current < _stop:
+        try:
+            ret.append(lst[current])
+        except IndexError:
+            return ret
+        current += step
+    return ret
+    
+>>> _slice(lst,0,10,-2)
+[]
+>>> _slice(lst,0,10,2)
+[0,2,4,6,8]
+>>> lst[0:10:-2]
+[]
+>>> lst[0:10:2]
+[0,2,4,6,8]
+>>> lst[10:2:-2]
+[9,7,5,3]
+>>> _slice(lst,10,2,-2)
+[]
+
+
+>>> def _slice(lst,start=0,stop=0,step=1):
+
+    ret = []
+    current = start
+    
+    if stop > 0:
+        while current < stop:
+            try:
+                ret.append(lst[current])
+            except IndexError:
+                pass
+            current += step
+        
+    if step < 0:
+        while current > stop:
+            try:
+                ret.append(lst[current])
+            except IndexError:
+                pass
+            current += step
+
+    return ret
+    
+>>> lst[9:1:-2]
+[9,7,5,3]
+>>> _slice(lst,9,1,-2)
+[9,7,5,3]
+

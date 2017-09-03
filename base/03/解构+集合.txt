@@ -1,0 +1,346 @@
+
+### 解构和封装
+
+解构：按照元素顺序，把线性解构的元素，赋值给变量
+
+>>> x = 1
+>>> y = 2
+>>> x, y = y, x
+>>> print(x, y)
+2 1
+
+封装：定义一个元组，可以省略小括号，封装出来的一定是元组
+
+>>> t = 1, 2
+>>> t
+(1, 2)
+>>>type(t)
+tuple
+
+*** python3中的解构变化 ***
+
+>>> lst = list(range(1000))
+>>> head, *mid, tail = lst
+0
+[1,2,3,...,998]
+999
+
+>>> *mid
+can't use starred expression here # 不能使用*星号表达式
+
+>>> head, *tail = lst
+0
+[1,2,3,...,999]
+
+>>> lst = [0,1,2,3,4]
+>>> *head, tail = lst # *head代表除了最后一个元素外的所有元素
+>>> head
+[0,1,2,3]
+
+>>> *lst2 = lst # 不能单一的使用星号作为变量接收，如果可以，相当于lst[0:0]
+SyntaxError: starred assignment target must be in a list or tuple
+
+>>> head, *m1, *m2, tail = lst # 同一个解构中，只能使用一个星号
+SyntaxError: two starred expressions in assignment
+
+>>> first, second, *others, last = lst
+0 1 [2,3] 4
+
+>>> v1, v2, v3, v4, v5, v6, v7 = lst # 当左边变量超过右边元素个数的时候，是不允许的
+ValueError: not enough values to unpack (expected 7, got 5)
+
+>>> v1, v2 = lst # 数量不匹配
+ValueError: too many values to unpack (expected 2)
+
+>>> v1, v2, v3, *v4, v5, v6 = lst
+>>> *v3
+[]
+
+>>> lst = [1, 2]
+>>> head, *mid, tail = lst
+>>> mid
+[]
+
+--- 元素按照顺序赋值给变量
+--- 变量个数和元素个数必须匹配
+--- 加星号变量，可以接受任意个数的元素
+--- 加星号的变量不能单独出现
+
+>>> f, *t = (1,2,3,4)  # 无论右边元素是什么类型的，左边的星号变量都是列表
+>>> t
+[2,3,4]
+
+>>> lst = [0, 1, 2, 3]
+>>> head, *_, tail = lst # 在python中，使用下划线_的方式，来丢弃该变量
+>>> print(head, _, tail)
+0 [1,2] 3
+
+>>> l = ['a','b']
+>>>for _, item in enumerate(l):
+        print(item)
+a
+b
+
+单个下划线是python的合法标识符，但是如果不是要丢弃一个变量，通常不要用单个下划线表示一个有意义的变量
+
+#如何取出索引1,3，和倒数第二个元素
+lst = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+_, v1, _, v2, *_, last, _ = lst
+print(v1)
+
+>>> lst = [1,(2,3),5]
+>>> _, v, *_, = lst
+>>> v
+(2,3)
+>>> _, (_, val), *_ = lst # 解构是支持多层次的
+>>> val
+3
+>>> _, (*_, tail), *_ = lst
+>>> tail
+3
+>>> _, [*_, tail], *_ = lst
+>>> tail
+3
+>>> _, _, tail, *_ = lst
+>>> tail
+5
+
+>>> 'env=/usr/local/bin'.partition('=')
+('env', '=', '/usr/local/bin')
+>>> key, _, value = 'env=/usr/local/bin'.partition('=')
+>>> key
+'env'
+>>> value
+'/usr/local/bin'
+
+### 集合 ###
+
+数学意义上的集合：没有重复元素
+
+定义方式：
+    s = set() # set是一个无序的集合
+    s = {1,2,3}
+    s = set(range(3))
+
+增加
+    >>> s = {0,1,2}
+    >>> s.add(3)
+    {0,1,2,3}
+    >>> s.add(3)
+    {0,1,2,3} # 添加的时候，判断存在相同元素时，默认去重
+    
+    >>> s.update(range(8,10)) #update方法 原地修改，返回None
+    >>> s
+    {0,1,2,3,8,9}
+    
+    >>> for e in range(10):
+            s.add(e)
+    
+    >>> s.update(10) # update方法是对可迭代对象进行操作
+    TypeError:'int' object is not iterable
+
+删除
+    >>> s = {0,1,2,3,4,5,6,7,8,9}
+    >>> s.remove(6)
+    >>> s
+    {0,1,2,3,4,5,7,8,9}
+    >>> s.remove(6) # remove方法删除一个set中的元素，若元素不存在，则抛出KeyError
+    KeyError:6
+    
+    >>> s.pop() # set是一个无序的集合，pop()不能指定索引
+    0
+    >>> s
+    {1,2,3,4,5,7,8,9}
+    
+    >>> s.clear()
+    >>> s
+    set()
+    >>> s.pop()
+    KeyError: 'pop from an empty set'
+    
+    >>> s = {1}
+    >>> s.discard(1)
+    >>> s
+    set()
+    >>> s.discard(999) # discard 并不会报错
+    
+    --- remove 删除给定的元素，元素不存在，抛出KeyError
+    --- discard 删除给定的元素，元素不存在，什么也不做
+    --- pop 随机删除一个元素并返回，集合为空，抛出KeyError
+    --- clear 清空集合
+
+修改
+    集合不能修改单个元素，因为set()是无序的，没有下标。
+    若想修改，需操作clear()后add()
+
+查找
+    集合不能通过索引访问，因为集合不是一个线性结构
+    集合没有访问单个元素的方法
+    集合不是线性结构，集合元素没有顺序
+
+成员运算符
+    in
+    not in
+    判断一个元素，是否在容器中(list,tuple,set,bytearray)
+    
+    >>> b'b' in bytearray(b'abc') # 单个不能变化的叫bytes；把不能变化的bytes变成可变对象的叫bytearray
+    True
+    
+    --- 集合的成员运算 和 其他线性结构的时间复杂度是不同的
+    >>> lst = list(range(1000000))
+    >>> s = set(range(1000000))
+    
+    >> %%timeit
+    .. -1 in lst
+    ..
+    14.5 ms ± 455 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+    
+    >> %%timeit
+    .. -1 in lst
+    ..
+    52.4 ns ± 0.0708 ns per loop (mean ± std. dev. of 7 runs, 10000000 loops each)
+    
+    能够使用set做成员运算的时候，尽量使用集合，而不要使用list,tuple等
+    
+    --- 集合的效率 和 集合的规模无关，O(1)
+    --- 列表的效率 和 列表的规模呈正比, O(n)
+    
+    > 个人经验：集合可以用于去重
+    
+    >>> html = set['\n','\n']
+        for item in html:
+            if item = '\n':
+                print()
+                
+    
+    'sha1:c3abbcf47b81:cc1b5faad8e9215ae0d4eda338eca165b03515e0'
+    
+### 集合运算
+
+交集∩
+    集合论中，设A，B两个集合，由所有属于集合A 且 属于集合B的元素所组成的集合，叫做集合A，叫做集合A 与集合B的交集(intersection)
+    >>> s1 = {1,2,3}
+    >>> s2 = {2,3,4}
+    >>> s1.intersection(s2) #返回结果集，原地不做修改的函数，交集是有一个交换率的
+    {2,3}
+    >>> s1
+    {1,2,3}
+    
+    >>> s1.intersection_update(s2) # 原地修改，并返回None
+    >>> s1
+    {2,3}
+    >>> s2
+    {2,3,4}
+    
+    >>> s1 & s2 # 交集运算重载符，原地不修改，效果=intersection
+    {2,3}
+
+差集
+    集合A 和 集合B，当集合C的元素仅仅存在于A中，但不存在于B中，并且A中存在、B中不存在的元素，全部存在C中，那么C是A的差集
+    >>> s1 = {1,2,3}
+    >>> s2 = {2,3,4}
+    >>> s1.difference(s2)
+    {1}
+    >>> s2.difference(s1)
+    {4}
+    
+ ---差集 是不具备交换率的
+ 
+    >>> s1.difference_update(s2)
+    >>> s1
+    {1}
+
+    >>> s1 = {1,2,3}
+    >>> s1 - s2  # -是差集的运算重载符
+    {1}
+    >>> s2 - s1
+    {4}
+
+对称差集
+    集合A 与 集合B：一个元素，要么在集合A中，要么在集合B中
+    >>> s1 = {1,2,3}
+    >>> s2 = {2,3,4}
+    >>> s1.symmetric_difference(s2)
+    {1,4}
+    >>> s2.symmetric_difference(s1)
+    {1,4}
+    
+ --- 对称差集也是有交换率的
+ 
+    >>> s1.symmetric_difference_update(s2)
+    >>> s1
+    {1,4}
+    
+    >>> s1 ^ s2  # ^是对称差集的运算重载符
+    {1,4}
+    
+并集
+    若A和B，则A和B并集是所有A的元素和所有B的元素，而没有其他元素的集合
+    >>> s1.union(s2)
+    {1,2,3,4}
+    >>> s1
+    {1,2,3}
+    >>> s2
+    {2,3,4}
+    >>> s2.union(s1)
+    {1,2,3,4}
+    
+ --- 并集也具有交换率
+ 
+    >>> s1.update(s2)
+    {1,2,3,4}
+    >>> s2
+    {2,3,4}
+ 
+    >>> s1 | s2 # |是并集的运算重载符
+    {1,2,3,4}
+    
+补集
+    补集一般指绝对补集，设S是一个集合，A是S的一个子集，由S中所有不属于A的元素组成的集合 叫做子集A 在S中的绝对补集(简称补集或余集)
+    在程序语言中，没有补集运算
+    因为在程序中，无法定义出绝对全集，所以无法求出绝对补集
+
+同或 和 异或的概念
+
+### 集合相关的判断
+
+    >>> s1 = {1,2,3,4}
+    >>> s2 = {2,3}
+    如果一个集合s2，每一个元素都在集合s1中 ，且集合s1可能包含s2中没有的元素，则集合s1就是s2的一个超集，s2就是s1的一个子集
+    >>> s2.issubser(s1)
+    True
+    >>> s1.issubser(s2)
+    False
+    >>> s1.issuperser(s2)
+    True
+    >>> s2.issuperser(s1)
+    False
+
+    >>> def _issubser(s1,s2):
+            for x in s1:
+                if x not in s2:
+                    return False
+            return True
+
+    >>> _issubser(s1,s2)
+    False
+    >>> _issubser(s2,s1)
+    True
+    
+    >>> def _issubser(s1,s2):
+            for x in s2:
+                if x not in s1:
+                    return False
+            return True
+            
+    >>> _issubser(s1,s2)
+    True
+    
+    >>> s3 = {1,2}
+    >>> s4 = {3,4}
+    >>> s3.isdisjoint(s4) 
+    True
+ --- # isdisjoint判断2个集合 是否有交集，如果有交集 返回False, 如有没有交集，返回True
+ 
+### 集合的应用
+    

@@ -1,0 +1,91 @@
+
+
+### 解析式
+
+>>> lst = list(range(10))
+>>> ret = [x ** 2 for x in lst]
+[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+
+>>> lst = list(range(10))
+    ret = []
+    for x in lst:
+        ret.append(x ** 2)
+    print(ret)
+[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+
+列表解析式
+    语法：[expr for e in iterator]
+    优点：
+        代码简洁，可读性高
+        效率比 普通迭代稍高 ，并不是数据量及的提升
+        
+>>> ret = [x for x in lst if x % 2 == 0]
+[0,2,4,6,8]
+
+>>> lst = list(range(10))
+    ret = []
+    for x in lst:
+        if x % 2 == 0:
+            ret.append(x)
+    print(ret)
+[0, 2, 4, 6, 8]
+
+>>> ret = [x for x in lst if x > 0 if x < 5]
+[1,2,3,4]
+
+>>> ret = [x for x in lst if x < 5 or x > 7 if x % 2 == 0]
+[0,2,4,8]
+
+>>> ret = [(x,y) for x in range(5) for y in range(5,10)]
+
+>>> ret = [(x,y,x) for x in range(5) for y in range(5,10) for z in range(10,15)]
+
+>>> ret = [x for x in [y for y in range(10)]]
+>>> ret = []
+    for x in range(10):
+        ret.append(x)
+    print(ret)
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+什么时候用列表解析式?
+    跟着感觉走
+    太复杂，需要转换的，就写for循环
+    多个for循环，明显不知道结果是什么的，就不要用了
+    一眼看不出解析式的结果是是，也不要用了
+    
+# 偶数求平方，奇数求立方
+
+    x ** 2 if x % 2 == 0 else x ** 3 #三元表达式，三目表达式
+    语法：ret = x of cond else y
+>>> ret = [x ** 2 if x % 2 == 0 else x ** 3 for x in lst]
+[0, 1, 4, 27, 16, 125, 36, 343, 64, 729]
+>>> lst = list(range(10))
+    ret = []
+    for x in lst:
+        if x % 2 == 0:
+            ret.append(x ** 2)
+        else:
+            ret.append(x ** 3)
+    print(ret)
+[0, 1, 4, 27, 16, 125, 36, 343, 64, 729]
+
+>>> 3 if True #python中，三元表达式，必要要有else，且只能有一个if ... else
+>>> 3 if True elif False 4
+
+>>> g = (x ** 2 for x in range(100)) # 使用一对圆括号 代替之前的 方括号，这就变成了生成器解析式
+>>> next(g)
+
+*** 生成器解析式，返回的是一个生成器 ***
+    优点：不占内存，惰性求值
+    >>> def fn(x):
+            print('executed')
+            return(x)
+        g = (fn(x) for x in range(10))
+        
+    什么时候使用我们的生成器？
+        明确知道需要使用下标的时候，用列表解析式，因为生成器是无法用下标进行访问的
+        如果我们用缓存，就不能用生成器解析式，就要用列表解析式了
+        
+集合解析式
+
+
