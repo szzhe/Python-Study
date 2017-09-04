@@ -1,0 +1,58 @@
+
+-----------------------------------------------------
+>>> ' '.join(['i','love','my','wife'])
+'i love my wife'
+==
+>>> 'i '+'love '+'my '='wife'
+'i love my wife'
+-----------------------------------------------------
+无法控制字符串的格式
+
+###字符串格式化
+	print style 字符串格式化
+		>>> s = 'i love %s' %('python')
+		'i love python'
+		
+	@ %s/%r，格式化字符串，隐式的使用str()，将value转化成字符串
+	@ %d，格式化数字类型，如果value不是数字，则直接抛出异常
+	
+	补充：isinstance(object，type) 判断一个对象是否是一个已知的类型~!
+			isinstance('99',int)	False
+			isinstance(1,int)	True
+
+###format
+	>>> s = 'i love {},and {}'.format('gigi','wifi')
+	i love gigi , and wifi
+	>>> s = 'i love [0],[0]'.format('gigi') # 位置参数
+	i love gigi , gigi
+	>>> s = 'i love [1],[0]'.format('wifi','gigi')
+	i love gigi , wifi
+	>>> s = 'i love {girl},{wifi}'.format(girl="gigi",wifi="wife") # 关键字参数
+	i love gigi , wife
+	>>> s = 'i love {girl},{girl}'.format(girl="gigi")
+	i love girl , girl
+	>>> s = 'i love {girl},[0]'.format('wifi',girl='gigi') # 位置参数必须要写在前面，关键字参数在后面
+	i love wifi , gigi
+	总结:只支持列表的索引传递
+		- {} 按照顺序，使用位置参数
+		- [数字i] 会把位置参数当成一个列表args，args[i]，当i不在是args的索引的时候，抛出 IndexError
+		- {关键字k} 会把关键字参数当成一个字典 kwarge，使用kwarge[k]，当k不是kwarge的key时，就会抛出KeyError
+	补充：需打印括号{}
+	>>> '{{}}'.format('a')
+	{}
+	>>> '{{{}}}'.format('a')
+	{a}
+	
+### 字符串与bytes
+	定义：
+		string	是文本序列
+		bytes	是字节序列
+	区别：
+		文本是有编码的(utf8,gdk,GB18030)
+		字节没有编码
+		文本的编码指的是字符如何使用字节来表示
+		单字节编码：ascii
+		多字节编码：utf8
+	编码是什么？从一种形式或格式转换为另一种形式的过程，也成为计算机编程语言的代码，简称编码
+	*** python3中，字符串默认使用uft8编码，utf8是由3个16禁止的字符组成的三节码
+	

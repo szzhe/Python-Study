@@ -1,123 +1,9 @@
 
-### 解构和封装
-
-解构：按照元素顺序，把线性解构的元素，赋值给变量
-
->>> x = 1
->>> y = 2
->>> x, y = y, x
->>> print(x, y)
-2 1
-
-封装：定义一个元组，可以省略小括号，封装出来的一定是元组
-
->>> t = 1, 2
->>> t
-(1, 2)
->>>type(t)
-tuple
-
-*** python3中的解构变化 ***
-
->>> lst = list(range(1000))
->>> head, *mid, tail = lst
-0
-[1,2,3,...,998]
-999
-
->>> *mid
-can't use starred expression here # 不能使用*星号表达式
-
->>> head, *tail = lst
-0
-[1,2,3,...,999]
-
->>> lst = [0,1,2,3,4]
->>> *head, tail = lst # *head代表除了最后一个元素外的所有元素
->>> head
-[0,1,2,3]
-
->>> *lst2 = lst # 不能单一的使用星号作为变量接收，如果可以，相当于lst[0:0]
-SyntaxError: starred assignment target must be in a list or tuple
-
->>> head, *m1, *m2, tail = lst # 同一个解构中，只能使用一个星号
-SyntaxError: two starred expressions in assignment
-
->>> first, second, *others, last = lst
-0 1 [2,3] 4
-
->>> v1, v2, v3, v4, v5, v6, v7 = lst # 当左边变量超过右边元素个数的时候，是不允许的
-ValueError: not enough values to unpack (expected 7, got 5)
-
->>> v1, v2 = lst # 数量不匹配
-ValueError: too many values to unpack (expected 2)
-
->>> v1, v2, v3, *v4, v5, v6 = lst
->>> *v3
-[]
-
->>> lst = [1, 2]
->>> head, *mid, tail = lst
->>> mid
-[]
-
---- 元素按照顺序赋值给变量
---- 变量个数和元素个数必须匹配
---- 加星号变量，可以接受任意个数的元素
---- 加星号的变量不能单独出现
-
->>> f, *t = (1,2,3,4)  # 无论右边元素是什么类型的，左边的星号变量都是列表
->>> t
-[2,3,4]
-
->>> lst = [0, 1, 2, 3]
->>> head, *_, tail = lst # 在python中，使用下划线_的方式，来丢弃该变量
->>> print(head, _, tail)
-0 [1,2] 3
-
->>> l = ['a','b']
->>>for _, item in enumerate(l):
-        print(item)
-a
-b
-
-单个下划线是python的合法标识符，但是如果不是要丢弃一个变量，通常不要用单个下划线表示一个有意义的变量
-
-#如何取出索引1,3，和倒数第二个元素
-lst = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-_, v1, _, v2, *_, last, _ = lst
-print(v1)
-
->>> lst = [1,(2,3),5]
->>> _, v, *_, = lst
->>> v
-(2,3)
->>> _, (_, val), *_ = lst # 解构是支持多层次的
->>> val
-3
->>> _, (*_, tail), *_ = lst
->>> tail
-3
->>> _, [*_, tail], *_ = lst
->>> tail
-3
->>> _, _, tail, *_ = lst
->>> tail
-5
-
->>> 'env=/usr/local/bin'.partition('=')
-('env', '=', '/usr/local/bin')
->>> key, _, value = 'env=/usr/local/bin'.partition('=')
->>> key
-'env'
->>> value
-'/usr/local/bin'
-
 ### 集合 ###
 
 数学意义上的集合：没有重复元素
 
-定义方式：
+定义与初始化：
     s = set() # set是一个无序的集合
     s = {1,2,3}
     s = set(range(3))
@@ -127,14 +13,11 @@ print(v1)
     >>> s.add(3)
     {0,1,2,3}
     >>> s.add(3)
-    {0,1,2,3} # 添加的时候，判断存在相同元素时，默认去重
+    {0,1,2,3} # 添加的时候，判断存在相同元素时，去重(什么也不做)
     
     >>> s.update(range(8,10)) #update方法 原地修改，返回None
     >>> s
     {0,1,2,3,8,9}
-    
-    >>> for e in range(10):
-            s.add(e)
     
     >>> s.update(10) # update方法是对可迭代对象进行操作
     TypeError:'int' object is not iterable
@@ -147,7 +30,7 @@ print(v1)
     >>> s.remove(6) # remove方法删除一个set中的元素，若元素不存在，则抛出KeyError
     KeyError:6
     
-    >>> s.pop() # set是一个无序的集合，pop()不能指定索引
+    >>> s.pop() # set是一个无序的集合，pop()不能指定索引，随机删除一个元素并返回
     0
     >>> s
     {1,2,3,4,5,7,8,9}
@@ -155,14 +38,14 @@ print(v1)
     >>> s.clear()
     >>> s
     set()
-    >>> s.pop()
+    >>> s.pop() # pop() 集合为空抛出key error
     KeyError: 'pop from an empty set'
     
     >>> s = {1}
     >>> s.discard(1)
     >>> s
     set()
-    >>> s.discard(999) # discard 并不会报错
+    >>> s.discard(999) # 删除没有的元素什么也不做
     
     --- remove 删除给定的元素，元素不存在，抛出KeyError
     --- discard 删除给定的元素，元素不存在，什么也不做
@@ -174,14 +57,16 @@ print(v1)
     若想修改，需操作clear()后add()
 
 查找
-    集合不能通过索引访问，因为集合不是一个线性结构
-    集合没有访问单个元素的方法
+    集合不能通过索引访问，因为集合不是一个线性结构(无序)
+    集合没有访问单个元素的方法(无序)
+    集合不能查找单个元素
     集合不是线性结构，集合元素没有顺序
 
 成员运算符
     in
     not in
     判断一个元素，是否在容器中(list,tuple,set,bytearray)
+    返回bool值
     
     >>> b'b' in bytearray(b'abc') # 单个不能变化的叫bytes；把不能变化的bytes变成可变对象的叫bytearray
     True
@@ -194,11 +79,11 @@ print(v1)
     .. -1 in lst
     ..
     14.5 ms ± 455 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
-    
     >> %%timeit
     .. -1 in lst
     ..
     52.4 ns ± 0.0708 ns per loop (mean ± std. dev. of 7 runs, 10000000 loops each)
+    结论1:做成员运算的时候集合的效率远高于列表
     
     能够使用set做成员运算的时候，尽量使用集合，而不要使用list,tuple等
     
@@ -341,6 +226,3 @@ print(v1)
     >>> s3.isdisjoint(s4) 
     True
  --- # isdisjoint判断2个集合 是否有交集，如果有交集 返回False, 如有没有交集，返回True
- 
-### 集合的应用
-    

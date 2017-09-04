@@ -4,7 +4,7 @@ Centos7下载地址：http://www.centoscn.com/CentosSoft/iso/2016/1214/8276.html
 【一】安装pyenv步骤
 1.yum install -y git
 2.curl -L https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | bash
-3.编辑/root/.bash_profile
+3.cd /root/  vim bash_profile
 export PATH="~/.pyenv/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$( pyenv virtualenv-init -)"
@@ -20,26 +20,27 @@ Python-3.6.2.tar.xz下载失败的处理办法
       python -V 查看当前python版本
       which python 查看当前python版本的路径
 
-3.  1)cd /home/workspace/magedu
-    2)pyenv virtualenv 3.6.2 magedu_test 安装3.6.2的虚拟环境，名称是megedu
 ------------------------------------【pyenv global，shell，local的使用】---------------------------------------
-1.pyenv gloable system 将全局版本切换成system版本
-cd /
-pyenv versions
-2.cd /tmp
-  pyenv local magedu 将当前目录切换到magedu环境
-  pyenv versions
-3.pyen shell system 将当前shell 切换到system目录
-
-4..python-version
-pyenv shell > pyenv local > pyenv gloable
-
-5.pyenv uninstall magedu 删除magedu环境
-
-6.pyenv update
 
 http://www.cnblogs.com/wswang/p/5467959.html
-----------------------------------------【本地调用linux下pycharm】-----------------------------------------
+
+1.pyenv virtualenv 3.6.2 magedu_env362 安装virtualenv，名称是magedu_env362
+
+pyenv global 3.6.2	将当前python系统版本切换到3.6.2
+pyenv global system	切换回系统版本
+
+pyenv local magedu_env362	设置当前目录(magedu)使用的Python版本环境为虚拟Python环境magedu_env362
+删除项目目录下的.python-version文件	切换回系统环境
+
+pyen shell system 将当前shell 切换到system目录
+
+pyenv shell > pyenv local > pyenv gloable
+
+pyenv uninstall magedu | magedu_learn 删除virtualenv虚拟环境
+
+pyenv update
+
+----------------------------------------【Centos7.2下pycharm】-----------------------------------------
 
 1.mobaxterm
 连接本机虚拟机 连接IP：192.168.44.128
@@ -78,9 +79,9 @@ pip freeze 显示当前环境下使用了哪些模块
   
   pyenv virtualenv 3.6.2 magedu_pip
   pyenv local magedu_pip
-  pip freeze
+  pip freeze #显示为空
   pip install -r requirement.txt    安装所需模块
-  注：出现安装失败的情况下，通过vim requirement.txt注释掉失败的文件名
+  注：如出现安装失败的情况下，通过vim requirement.txt注释掉失败的文件名
   
 ----------------------------------------【jupyter】----------------------------------------------
 1.进入pycharm_learn虚拟环境下
@@ -97,8 +98,6 @@ trusted-host = mirrors.aliyun.com
 5.前提：在pycharm_learn虚拟环境同级目录，新建notes目录
   jupyter notebook --ip=0.0.0.0 --no-browser --notebook-dir=../notes/ --allow-root
   获取网址：http://192.168.44.128:8888/?token=0d93476e125d8e58bcf8d27b17fb720adfe2c6cae7622888  随着每次启动,token会发生变化
-  
-  'sha1:60fa2f570aa5:93d804cfa7ec880e6b47f8d8fc2e7c111602a946'
 
   如果发现无法访问，一般是centos系统防火墙没有关闭，使用以下命令进行关闭
 systemctl stop firewalld.service #停止firewall
