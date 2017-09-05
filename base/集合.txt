@@ -97,9 +97,6 @@
             if item = '\n':
                 print()
                 
-    
-    'sha1:c3abbcf47b81:cc1b5faad8e9215ae0d4eda338eca165b03515e0'
-    
 ### 集合运算
 
 交集∩
@@ -205,14 +202,14 @@
 
     >>> s1 = {1,2,3,4}
     >>> s2 = {2,3}
-    如果一个集合s2，每一个元素都在集合s1中 ，且集合s1可能包含s2中没有的元素，则集合s1就是s2的一个超集，s2就是s1的一个子集
-    >>> s2.issubser(s1)
+    如果一个集合s2，每一个元素都在集合s1中，且集合s1可能包含s2中没有的元素，则集合s1就是s2的一个超集，s2就是s1的一个子集
+    >>> s2.issubser(s1) #子集
     True
     >>> s1.issubser(s2)
     False
-    >>> s1.issuperser(s2)
+    >>> s1.issuperset(s2) # 超集
     True
-    >>> s2.issuperser(s1)
+    >>> s2.issuperset(s1)
     False
 
     >>> def _issubser(s1,s2):
@@ -223,16 +220,16 @@
 
     >>> _issubser(s1,s2)
     False
-    >>> _issubser(s2,s1)
+    >>> _issubser(s2,s1) # 如果第一个元素是第二个元素的子集，返回True
     True
     
-    >>> def _issubser(s1,s2):
+    >>> def _issuperset(s1,s2):
             for x in s2:
                 if x not in s1:
                     return False
             return True
             
-    >>> _issubser(s1,s2)
+    >>> _issubser(s1,s2) # 如果第一个元素是第二个元素的超集，返回True
     True
     
     >>> s3 = {1,2}
@@ -240,3 +237,68 @@
     >>> s3.isdisjoint(s4) 
     True
  --- # isdisjoint判断2个集合 是否有交集，如果有交集 返回False, 如有没有交集，返回True
+ 
+### 集合的应用
+
+    - 去重
+    - 运算快(数据结构：非线性)
+    
+    1.有一个API，需要通过权限认证，并且需要有一定的权限才可以访问
+    例如：要求满足权限A,B,C中任意一项，有一个用户具有权限B,C,D，那么此用户是否有权限访问API呢？如何判断？
+    
+    >>> s1 = {'A','B','C'}
+        s2 = {'B','C','D'}
+        if not s1.isdisjoint(s2):
+            print('get api success')
+    get api success
+    
+    2.有一个任务列表，存储全部的任务，有一个列表，存储已经完成的任务，找出未完成的任务，怎么操作？
+    
+    >>> 差集
+    
+### 集合的限制
+
+    基本数据类型：int true false
+    基本数据结构：str list tuple bytes bytearray set
+    
+    >>> {[1,2,3],[1,2,3]} #list
+    TypeError：unhashable type:'list'
+    
+    >>> {bytearray(b'abc')} #bytearray
+    TypeError：unhashable type:'bytearray'
+    
+    >>> {{3}} #set
+    TypeError：unhashable type:'set'
+    
+    >>> {(1,2)} #tuple
+    {(1,2)}
+    >>> {b'abc'} # bytes
+    {b'abc'}
+    >>> {'a','b'} #str
+    {'a','b'}
+    
+    *** 集合元素 必须可hash ***
+    
+    >>> hash(b'abc')
+    3207415984564917395
+    >>> hash(1)
+    1
+    >>> hash('a')
+    -6272950950161308399
+    
+    >>> hash([1,2])
+    TypeError：unhashable type:'list'
+    >>> hash(bytearray(b'abc'))
+    TypeError：unhashable type:'bytearray'
+    
+    >>> a = 1
+    >>> a.__hash__() #内置方法
+    1
+    
+    >>> help(hash) # 查看帮助
+    
+    >>> l = [1,2]
+    >>> l.__hash__()
+    TypeError：'NoneType' object is not callable
+    
+    
