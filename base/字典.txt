@@ -1,5 +1,8 @@
 
-字典是一种KEY-VALUE结构，简称K-V对
+### 字典
+
+字典是一种KEY-VALUE结构，简称K-V对。相似的应用：redis memcached mongodb
+
 声明方式：
     d = {}
     d = dict{}
