@@ -8,7 +8,7 @@
     d = dict{}
     d = {'a':1,'b':2}
 
-    >>> d = dict.fromkeys(range(5))
+    >>> d = dict.fromkeys(range(5)) # 传入的可迭代对象元素是key，值为None
     >>> d
     {0:None,1:None,2:None,3:None,4:None}
     >>> d = dict.fromkeys(range(5),'abc')
@@ -32,7 +32,7 @@
     >>> d.update([('d':4),('p':0)]) #传入的是一个可迭代对象
     >>> d
     {'a':1,'b':2,'c'=3,'d'=4,'p'=0}
-    >>> d.update({'d':5}) #若存在就会修改字典
+    >>> d1.update({'d':5}) #若存在就会修改字典,若不存在就加入进去
     {'a':1,'b':2,'c'=3,'d'=5,'p'=0}
 
 修改
@@ -56,9 +56,14 @@
     {'b':2,'c'=3,'d'=5,'p'=0}
     >>> d.pop('b','default') #若值存在，default不会取到
     'default'
-    >>> d.popitem() #随机删除一对k-v对，并且返回这对k-v对，若k-v对不存在，则抛出KeyError
     
-    >>> d.clear()
+    >>> d.popitem() #随机删除一对k-v对，并且返回这对k-v对。若k-v对不存在，则抛出KeyError
+    >>>d
+    {'p',0}
+    >>> d.popitem()
+    KeyError：'popitem():dictionary is empty'
+    
+    >>> d.clear() # 清空字典
     >>> d
     {}
     
@@ -66,7 +71,66 @@
     >>> del d['a'] # del关键字，删除一个引用，尽量不用del，能用pop就用pop
     KeyError:'a'
     
-    若需要修改字典中的key，只能通过先删除再添加
+    问：如何对dict中的key进行修改？
+    答：若需要修改字典中的key，只能通过先删除再添加
     
+### 访问
+
+    通过传入的key，就能拿到value；当key不存在的时候，会抛出KeyError
     
+    >>> d.get('qq') #get方法 当key不存在的时候，返回None 事实上，返回的是一个默认值，只不过这个默认值 默认为None
+    >>> d.get('qq','123465789')
+    '123465789'
     
+    >>> j = {'city':'Shanghai','uname':'Miracle','uage':18} #假设为request获取到的一个json对象
+    >>> j['city']
+    'Shanghai'
+    >>> j.get('city':'Shanghai')
+    'Shanghai'
+    >>> j.get('adde':'盐湖区')
+    '盐湖区'
+    
+    >>> d.clear()
+    >>> d.setdefault('c':'default') #其实是 调用了get方法 然后赋值
+    'default'
+    >>> d.setdefault('c':'cc') # setdefault 方法，若存在，则不更新，若不存在则更新
+    'default'
+    
+    >>> def _setdefault(d,k,default):
+            value = d.get(k,default)
+            d[k] = value
+            return value
+    >>> _setdefault(d,'papa','3')
+    >>> d
+    {'c':'default','papa':'3'}
+    
+    *** 字典访问单个元素，要么用下标，要么用get，推荐后者 ***
+    
+### 字典的遍历
+
+    >>> for x in d:
+            print(x,d[x])
+    c default
+    papa 3
+    >>> d.values() # values 方法 返回一个可迭代对象，元素时字典里的所有value
+    dict_valus({'default','3'})
+    >>> d.items() # 获取所有键值对
+    dict_items({('c':'default'),('papa':'3')})
+    
+    >>> for x in d.items():
+            print(x)
+    ('c':'default')
+    ('papa':'3')
+    
+    解构： a, b = (1, 2)
+    
+    >>> for k,v in d.items(): #返回d字典所有key和value
+        print(k,v) 
+    c default
+    papa 3
+    
+    >>> d.keys() # 返回所有的key 作为一个list
+    dict_keys({'c','pap'})
+    >>> type(d.keys)
+    dict_keys
+    @@@ 在python2中，所有的结果返回的都是list列表；在Python3中，返回的结果都是可迭代对象
