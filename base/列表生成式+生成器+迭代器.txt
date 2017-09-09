@@ -146,7 +146,7 @@ def fib(max):
     
 for n in fib(6):
     print(n)
-    
+
 斐波拉契数列，解法三：
     
 def fib3(number):
