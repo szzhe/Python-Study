@@ -1,0 +1,243 @@
+
+############################################################ 列表生成式 ############################################################
+
+即List Comprehensions，用来创建list的生成式
+
+>>> [x * x for x in range(1, 11)]
+[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+
+>>> [x * x for x in range(1, 11) if x % 2 == 0] # 求10以内的偶数
+[4, 16, 36, 64, 100]
+
+还可以使用两层循环，可以生成全排列：
+
+>>> [m + n for m in 'ABC' for n in 'XYZ']
+['AX', 'AY', 'AZ', 'BX', 'BY', 'BZ', 'CX', 'CY', 'CZ']
+
+>>> import os
+>>> [d for d in os.listdir('.')] # os.listdir可以列出文件和目录
+['.emacs.d', '.ssh', '.Trash', 'Adlm', 'Applications', 'Desktop', 'Documents', 'Downloads', 'Library', 'Movies', 'Music', 'Pictures', 'Public', 'VirtualBox VMs', 'Workspace', 'XCode']
+
+for循环其实可以同时使用两个甚至多个变量，比如dict的items()可以同时迭代key和value：
+
+>>> d = {'x': 'A', 'y': 'B', 'z': 'C' }
+>>> [k + '=' + v for k, v in d.items()]
+['y=B', 'x=A', 'z=C']
+
+>>> L = ['Hello', 'World', 'IBM', 'Apple']
+>>> [s.lower() for s in L] # 把一个list中所有的字符串变成小写
+['hello', 'world', 'ibm', 'apple']
+
+### 补充知识 isinstance ###
+
+语法：isinstance（object，type）
+作用：来判断一个对象是否是一个已知的类型
+其第一个参数(object)为对象，第二个参数(type)为类型名(int...)或类型名的一个列表((int,list,float)是一个列表)。其返回值为布尔型(True or flase)
+若对象的类型与参数二的类型相同则返回True
+若参数二为一个列表，则若对象类型与元组中类型名之一相同即返回True
+
+案例：
+>>> a = "b"
+>>> isinstance(a,str)
+True
+>>> isinstance(a,int)
+False
+>>> isinstance(a,(int,list,float))
+False
+>>> isinstance(a,(int,list,float,str))
+True
+
+### 补充知识 练习 ###
+
+解题：list中既包含字符串，又包含整数，非字符串类型没有lower()方法
+
+解法一：
+
+lst = ['Hello', 'World', 18, 'Apple', None]
+lst_s = []
+for i in lst:
+    if isinstance(i,str) == False:
+        continue
+    else:
+        lst_s.append(i.lower())
+print(lst_s)
+
+['hello', 'world', 'apple']
+
+解法二：
+
+lst = ['Hello', 'World', 18, 'Apple', None]
+lst1 = [i.lower() for i in lst if isinstance(i,str) == True]
+print(lst1)
+
+['hello', 'world', 'apple']
+
+############################################################ 生成器 ############################################################
+
+受到内存限制，列表容量肯定是有限的。
+EG：创建一个包含100万个元素的列表，不仅占用很大的存储空间，如果我们仅仅需要访问前面几个元素，那后面绝大多数元素占用的空间都白白浪费了。
+如果列表元素可以按照某种算法推算出来，那我们是否可以在循环的过程中不断推算出后续的元素呢？这样就不必创建完整的list，从而节省大量的空间。
+在Python中，这种一边循环一边计算的机制，称为生成器：generator。
+
+创建generator方法一：把列表生成式的[]改成()
+
+>>> L = [x * x for x in range(10)]
+>>> L
+[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+>>> g = (x * x for x in range(2))
+>>> g
+<generator object <genexpr> at 0x1022ef630>
+
+如果要一个一个打印出来，可以通过next()函数获得generator的下一个返回值
+
+>>> next(g)
+0
+>>> next(g)
+1
+>>> next(g)
+Traceback (most recent call last):
+  File "<input>", line 1, in <module>
+StopIteration
+
+*** 说明：generator保存的是算法，每次调用next(g)，就计算出g的下一个元素的值，直到计算到最后一个元素，没有更多的元素时，抛出StopIteration的错误
+
+上面这种不断调用next(g)实在是太变态了，正确的方法是使用for循环，因为generator也是可迭代对象
+
+>>> g = (x * x for x in range(10))
+>>> for n in g:
+...     print(n,end=",")
+... 
+
+[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+
+如果推算的算法比较复杂，用类似列表生成式的for循环无法实现的时候，还可以用函数来实现
+
+斐波拉契数列，解法一：
+
+def fib(n):
+    stack = []
+    if n == 0 or n == 1:
+        return 1
+    else:
+        stack.append(1)
+        stack.append(1)
+        for i in range(2,n):
+            stack.append(stack[i-1]+stack[i-2])
+    return stack
+
+lst = fib(3)
+print(lst)
+
+[1, 1, 2]
+
+创建generator方法二：如果一个函数定义中包含yield关键字，那么这个函数就不再是一个普通函数，而是一个generator
+
+*** 对于函数改成的generator来说，遇到return语句或者执行到函数体最后一行语句，就是结束generator的指令，for循环随之结束。
+
+斐波拉契数列，解法二：
+
+def fib(max):
+    n, a, b = 0, 0, 1
+    while n < max:
+        yield (b)
+        a, b = b, a + b
+        n = n + 1
+    return 'done'
+    
+for n in fib(6):
+    print(n)
+    
+斐波拉契数列，解法三：
+    
+def fib3(number):
+    x, y = 0, 1
+    result = []
+    while y < number:
+        result.append(y)
+        x, y = y, x + y
+    return result
+
+lst3 = fib3(10)
+print(lst3)
+
+[1, 1, 2, 3, 5, 8]
+    
+*** 注解
+
+a, b = b, a + b
+相当于：
+
+t = (b, a + b) # t是一个tuple
+a = t[0]
+b = t[1]
+
+*** 重点：
+generator和函数的执行流程不一样。函数是顺序执行，遇到return语句或者最后一行函数语句就返回。而变成generator的函数，在每次调用next()的时候执行，遇到yield语句返回，再次执行时从上次返回的yield语句处继续执行。
+
+############################################################ 迭代器 ############################################################
+
+可以直接作用于for循环的数据类型有以下几种：
+
+一类是集合数据类型，如list、tuple、dict、set、str等；
+
+一类是generator，包括生成器和带yield的generator function。
+
+这些可以直接作用于for循环的对象统称为可迭代对象：Iterable。
+
+可以使用isinstance()判断一个对象是否是Iterable对象：
+
+>>> from collections import Iterable
+>>> isinstance([], Iterable)
+True
+>>> isinstance({}, Iterable)
+True
+>>> isinstance('abc', Iterable)
+True
+>>> isinstance((x for x in range(10)), Iterable)
+True
+>>> isinstance(100, Iterable)
+False
+
+可以被next()函数调用并不断返回下一个值的对象称为迭代器：Iterator。
+
+生成器都是Iterator对象，但list、dict、str虽然是Iterable，却不是Iterator
+
+把list、dict、str等Iterable变成Iterator可以使用iter()函数：
+
+>>> isinstance(iter([]), Iterator)
+True
+>>> isinstance(iter('abc'), Iterator)
+True
+
+为什么list、dict、str等数据类型不是Iterator？
+
+这是因为Python的Iterator对象表示的是一个数据流，Iterator对象可以被next()函数调用并不断返回下一个数据，直到没有数据时抛出StopIteration错误。可以把这个数据流看做是一个有序序列，但我们却不能提前知道序列的长度，只能不断通过next()函数实现按需计算下一个数据，所以Iterator的计算是惰性的，只有在需要返回下一个数据时它才会计算。
+
+Iterator甚至可以表示一个无限大的数据流，例如全体自然数。而使用list是永远不可能存储全体自然数的。
+
+### 小结
+
+凡是可作用于for循环的对象都是Iterable类型；
+
+凡是可作用于next()函数的对象都是Iterator类型，它们表示一个惰性计算的序列；
+
+集合数据类型如list、dict、str等是Iterable但不是Iterator，不过可以通过iter()函数获得一个Iterator对象。
+
+Python的for循环本质上就是通过不断调用next()函数实现的，例如：
+
+for x in [1, 2, 3, 4, 5]:
+    pass
+
+实际上完全等价于：
+
+# 首先获得Iterator对象:
+it = iter([1, 2, 3, 4, 5])
+# 循环:
+while True:
+    try:
+        # 获得下一个值:
+        x = next(it)
+    except StopIteration:
+        # 遇到StopIteration就退出循环
+        break
+
