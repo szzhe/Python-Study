@@ -72,7 +72,7 @@ print(lst1)
 
 ['hello', 'world', 'apple']
 
-############################################################ 生成器 ############################################################
+############################################################ 生成器generator ############################################################
 
 受到内存限制，列表容量肯定是有限的。
 EG：创建一个包含100万个元素的列表，不仅占用很大的存储空间，如果我们仅仅需要访问前面几个元素，那后面绝大多数元素占用的空间都白白浪费了。
@@ -143,8 +143,10 @@ def fib(max):
         a, b = b, a + b
         n = n + 1
     return 'done'
-    
-for n in fib(6):
+
+c = fib(6)
+
+for n in c:
     print(n)
 
 斐波拉契数列，解法三：
@@ -174,13 +176,11 @@ b = t[1]
 *** 重点：
 generator和函数的执行流程不一样。函数是顺序执行，遇到return语句或者最后一行函数语句就返回。而变成generator的函数，在每次调用next()的时候执行，遇到yield语句返回，再次执行时从上次返回的yield语句处继续执行。
 
-############################################################ 迭代器 ############################################################
+############################################################ 迭代器Iterator ############################################################
 
 可以直接作用于for循环的数据类型有以下几种：
-
 一类是集合数据类型，如list、tuple、dict、set、str等；
-
-一类是generator，包括生成器和带yield的generator function。
+一类是generator，包括生成器和带yield的generator function。[参考：生成器]
 
 这些可以直接作用于for循环的对象统称为可迭代对象：Iterable。
 
@@ -198,9 +198,13 @@ True
 >>> isinstance(100, Iterable)
 False
 
-可以被next()函数调用并不断返回下一个值的对象称为迭代器：Iterator。
+可以通过for语句依次循环出每一个元素，或被next()函数调用并不断返回下一个值的对象称为迭代器：Iterator。
 
-生成器都是Iterator对象，但list、dict、str虽然是Iterable，却不是Iterator
+创建一个迭代器有3种方法：
+1).为容器对象添加__iter__()和__next__()方法(Python2.7中是next())；
+__iter__()返回迭代器对象本身self，__next__()则返回每次调用next()或迭代时的元素
+
+2).生成器都是Iterator对象，但list、dict、str虽然是Iterable，却不是Iterator
 
 把list、dict、str等Iterable变成Iterator可以使用iter()函数：
 
@@ -209,11 +213,52 @@ True
 >>> isinstance(iter('abc'), Iterator)
 True
 
+# Create iterator Object
+class Container:
+    def __init__(self, start = 0, end = 0):
+        self.start = start
+        self.end = end
+    def __iter__(self):
+        print("[LOG] I made this iterator!")
+        return self
+    def __next__(self):
+        print("[LOG] Calling __next__ method!")
+        if self.start < self.end:
+            i = self.start
+            self.start += 1
+            return i
+        else:
+            raise StopIteration()
+c = Container(0, 5)
+for i in c:
+    print(i)
+        
+<class 'list_iterator'>
+1
+2
+3
+[LOG] I made this iterator!
+[LOG] Calling __next__ method!
+0
+[LOG] Calling __next__ method!
+1
+[LOG] Calling __next__ method!
+2
+[LOG] Calling __next__ method!
+3
+[LOG] Calling __next__ method!
+4
+[LOG] Calling __next__ method!
+
+创建迭代器对象的好处是当序列长度很大时，可以减少内存消耗，因为每次只需要记录一个值即刻(经常看到人们介绍Python2.7的range函数时，建议当长度太大时用xrange更快，在Python3.5中已经去除了xrange只有一个类似迭代器一样的range)
+
 为什么list、dict、str等数据类型不是Iterator？
 
 这是因为Python的Iterator对象表示的是一个数据流，Iterator对象可以被next()函数调用并不断返回下一个数据，直到没有数据时抛出StopIteration错误。可以把这个数据流看做是一个有序序列，但我们却不能提前知道序列的长度，只能不断通过next()函数实现按需计算下一个数据，所以Iterator的计算是惰性的，只有在需要返回下一个数据时它才会计算。
 
 Iterator甚至可以表示一个无限大的数据流，例如全体自然数。而使用list是永远不可能存储全体自然数的。
+
+3).生成器通过yield语句快速生成迭代器，省略了复杂的__iter__()&__next__()方式。[参见<生成器>，创建方法二]
 
 ### 小结
 
