@@ -133,7 +133,7 @@
     ### 排版 
         *** s = "aa bb cC"
         s.title() 驼峰，语句中所有出现的单词，首字母大写 Aa Bb Cc
-        s.capitalize() 语句中，首个单词首个字母大写，已有的词组中的大写转换为小写 Aa bb cc
+        s.capitalize() 语句中，首个单词首个字母大写，其余小写 Aa bb cc
         s.center() 两边填充
             语法：S.center(width[,fillchar]) -> str
             >>> s.center(100,#) -- ‘00000szzhe0000’
@@ -147,15 +147,15 @@
             
     ### 修改
     
-        s.replace() 
+        s.replace() # 返回一个新字符串，原始字符串中的字符串old会被替换成字符串new。可选的max用于限制替换的次数
             语法：S.replace(old,new[,count]) -> str 
             *** s = 'abcdabcd' 
             >>> print(s.replace('c','X')) --- 'abXdabXd'
             >>> print(s) --- 'abcdabcd' #返回结果集，原地不做修改
             >>> print(s.replace('c','X'),1) --- 'abXdabcd'
             >>> print(s.replace('abc','XYZ')) --- 'XYZdXYZd' # 多个字符修改
-        s.strip()
-            语法：S.strip([chars]) -> str 默认去掉前后的空格
+        s.strip() # 返回一个新字符串，原始字符串首尾处的一切空白符(即制表符、空格、换行符等)都会被去除掉
+            语法：S.strip([chars])
             *** s = '  pa pa    pa '
             >>> s.strip()     --- 'pa pa    pa'
             >>> s.strip(" ")  --- 'pa pa    pa'
