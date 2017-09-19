@@ -1,8 +1,7 @@
 
-#函数
+#函数-参数
 
 1、位置参数
-2、关键字参数
 
 def add(x,y):
     ret = []
@@ -13,6 +12,20 @@ print(add(3,5))
 3 + 5
 8
 
+计算x的n次方
+
+def fn(x, n):
+    sum = 1
+    while n > 0:
+        sum = sum * x
+        n = n - 1
+    return sum
+print(fn(5, 3))
+
+125
+
+2、关键字参数
+
 def add(3,x=3):
     pass
 TypeError: add() got multiple values for argument 'x'
@@ -21,14 +34,11 @@ def add(y=5,3): # 位置参数必须在关键字参数的前面
     pass
 SyntaxError: positional argument follows keyword argument
 
-##参数
-
-1、参数的默认值
+3、默认参数
 
 def inc(base,x=1):
     return base + x
 inc(3) # 4
-
 inc(3,2) #5
 
 def inc(x=0,y):
@@ -36,7 +46,24 @@ def inc(x=0,y):
 SyntaxError: non-default argument follows default argument
 注：在定义的时候，默认值参数，必须要在默认参数的后面
 
-2、可变参数
+def add_end(L=[]):
+    L.append('END')
+    return L
+
+>>> add_end()
+['END']
+>>> add_end()
+['END', 'END']
+
+说明：Python函数在定义的时候，默认参数L的值就被计算出来了，即[]，因为默认参数L也是一个变量，它指向对象[]，每次调用该函数，如果改变了L的内容，则下次调用时，默认参数的内容就变了，不再是函数定义时的[]了。
+
+def add_end(L=None):
+    if L is None:
+        L = []
+    L.append('END')
+    return L
+
+4、可变参数
 
 def sum(*args): # 可以接受 任意多个参数，参数将组成一个元组
     ret = 0
@@ -70,16 +97,22 @@ TypeError: connect() takes 0 positional arguments but 1 was given
     关键字可变参数
         参数前面加两个星号，参数构成一个字典，传参只能以关键字参数传递
 --------------------------------------- YES
+可变参数混合使用场景
+
 def fn(*args, **kwargs):
     print(args, kwargs)
 fn(1, 2, c=3, d=4)
 (1, 2) {'c': 3, 'd': 4}
 
+fn(1,2) # (1, 2) {}
+fn(1, b=2) # (1,) {'b': 2}
+fn(a=1, b=2) # () {'a': 1, 'b': 2}
+
 fn(c=5, 2, a=1) # 当位置可变参数和关键字可变参数一起使用时，可变位置参数必须在前面
 SyntaxError: positional argument follows keyword argument
 fn(2, c=5, a=1)
 (2,) {'c': 5, 'a': 1}
---------------------------------------- NO
+--------------------------------------- YES
 def fn(x, y, *args, **kwargs):
     print(x,end=",")
     print(y,end=",")
@@ -94,9 +127,10 @@ TypeError: fn() got multiple values for argument 'x'
 def fn(*args, x):
     print(args)
     print(x)
+    
 fn(2, 3, 4)
 TypeError: fn() missing 1 required keyword-only argument: 'x'
-#位置可变参数可以在普通参数之前，但是在位置可变参数之后的普通参数变成了keyword-only参数。keyword-only参数必须要用关键字方式传递，不能通过普通的位置参数传递
+#def定义函数的时候，位置可变参数可以在普通参数之前，但是在位置可变参数之后的普通参数变成了keyword-only参数。keyword-only参数必须要用关键字方式传递，不能通过普通的位置参数传递
 fn(2, 3, x=4) 
 (2, 3)
 4
@@ -121,7 +155,7 @@ def fn(*args, x=5):
     print(args)
 fn(1, 2, 3, 4)
 5
-(2, 3, 4)
+(1, 2, 3, 4)
 --------------------------------------- YES
 def fn(x=5, **kwargs):
     print(x, end=",")
@@ -132,7 +166,7 @@ fn(a=1, b=2)
 fn(3, a=1, b=2)
 3,{'a': 1, 'b': 2}
 
-def fn(**kwargs,x=5):
+def fn(**kwargs,x=5): # # 关键字可变参数不允许在普通参数之前
     print(x, end=",")
     print(kwargs)
 
@@ -173,6 +207,18 @@ TypeError: add() got an unexpected keyword argument 'a'
 add(**{'x': 1, 'y': 2, 'a'=3}) # 要完全匹配函数的参数个数
 SyntaxError: invalid syntax
 
+--------------------------------------- YES
+
+def person(name, age, **kw):
+    print('name:', name, 'age:', age, 'other:', kw)
+    
+>>> extra = {'city': 'Beijing', 'job': 'Engineer'}
+>>> person('Jack', 24, city=extra['city'], job=extra['job'])
+name: Jack age: 24 other: {'city': 'Beijing', 'job': 'Engineer'}
+或
+>>> person('Jack', 24, **extra)
+name: Jack age: 24 other: {'city': 'Beijing', 'job': 'Engineer'}
+
 参数解构有两种形式：
     一个星号，解构的对象是一个可迭代对象，解构的结果是位置参数
     两个星号，解构的对象是一个字典，解构的结果是关键字参数
@@ -180,26 +226,26 @@ SyntaxError: invalid syntax
 --------------------------------------- YES
     
 def sum(*args):
-	ret = 0
-	for x in args:
-		ret += x
-	return ret
+    ret = 0
+    for x in args:
+        ret += x
+    return ret
 print(sum(*range(10)))
 45
 --------------------------------------- YES
 
 def fn(**kwargs):
-	print(kwargs)
+    print(kwargs)
 fn(**{'1':1})
 
 {'1': 1}
 
 fn(**{1:1})
-TypeError: fn() keywords must be strings
+TypeError: fn() keywords must be strings # 
 ---------------------------------------------------------------------------------------------------------------------
 *** keyword-only
 
-def fn(*, x): # 第一个参数是一个星号，表示星号之后的参数只能通过
+def fn(*, x): 
     print(x)
     
 fn(x=3)
@@ -240,3 +286,23 @@ def fn(*args):
 fn(*{1, 2, 3})
 
 (1,2,3) # set是无序的，必须要保证结果和的set的顺序是无关的
+
+*** 小结小结小结 ***
+
+* 位置参数必须在关键字参数的前面
+
+* 默认值参数，必须要在普通默认参数(位置参数、关键字参数)的后面
+* 默认值参数，必须指向不变对象！用None这个不变对象来实现，函数体内用if判断None
+
+* 位置可变参数：参数前面加一个星号，参数构成一个元组，传参只能以位置参数传递
+* 关键字可变参数：参数前面加两个星号，参数构成一个字典，传参只能以关键字参数传递，传递进去后type类型为dict
+* 当位置可变参数和关键字可变参数一起使用时，位置可变参数必须在前面
+* 位置可变参数可以在普通参数之前，但是在位置可变参数之后的普通参数变成了keyword-only参数。
+  keyword-only参数必须要用关键字方式传递，不能通过普通的位置参数传递
+* 关键字可变参数不允许在普通参数之前
+
+* 参数解构有两种形式：
+    一个星号，解构的对象是一个可迭代对象，解构的结果是位置参数
+    两个星号，解构的对象是一个字典，解构的结果是关键字参数[key必须是str]
+
+* keyword-only
