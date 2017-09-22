@@ -1,0 +1,122 @@
+
+#### 函数的返回值
+
+return作用： 
+1.返回结果值
+2.表示结束函数，return之后的语句将不会被执行
+
+#一个函数可以有多个renturn，执行到哪个return，由哪个return返回结果并结束函数
+def fn(x):
+    for i in range(x): # x =10;i = 0
+        if x > 3:
+            return i
+    else:
+        print("xx")
+print(fn(10)) ---> 0
+s = fn(2) ---> xx
+
+#如果当函数没有return语句的时候，默认返回一个None
+def fn(x):
+    pass
+ret = fn(5)
+print(ret) ---> None
+
+# 不想返回结果，想直接结束函数，可以简写为return，其结果返回为None
+def fn(x):
+    if x > 3:
+        return 
+      # return x
+    return '<=3'
+print(fn(5)) ---> None
+# print(fn(5)) ---> 5
+print(fn(2)) ---> '<=3'
+----------------------------------------------------------------
+def fn():
+    return 3, 5
+ret = fn()
+print(ret) ---> (3,5)
+
+x, y = fn() # 类比封装
+print(x) ---> 3
+print(y) ---> 5
+
+### 函数的嵌套：函数体内可以有任意的python结构
+
+### 作用域
+
+x = 1
+def inc():
+    print(x) # 并未参与到运算中
+  # x = x + 1 # 只读可见，不可写
+    return x + 1
+inc() ---> 1
+      ---> 2
+# UnboundLocalError: local variable 'x' referenced before assignment
+
+x = 1
+def inc():
+    y = x + 1
+    return y 
+print(inc()) ---> 1
+             ---> 2
+
+@ 变量的作用域 为变量定义同级的作用域 也就是说 在哪一个级别定义的，在哪一个级别可见
+
+def fn():
+    xx = 1
+    print(xx)
+def fn2():
+    print(xx)
+print(fn2()) ---> NameError: name 'xx' is not defined
+
+def fn():
+    xx =1
+    print(xx)
+    def inner():
+        print(xx) # 只读可见，不可写
+    inner()
+fn() ---> 1
+     ---> 1
+     
+def fn():
+    xx = 1
+    print(xx)
+    def inner():
+        xx = 2 # 变量id()取值不同
+    inner()
+    print(xx)
+fn() ---> 1
+     ---> 1
+
+def fn():
+    global yy # 在函数体内，直接通过global关键字 提升变量，也是可以使其成为全局变量，并被调用
+    yy = 3
+fn() ---> 3
+
+def fn():
+    global zz
+    zz = 3
+    print(zz)
+def fn2():
+    # global zz
+    zz += 1 # 
+    print(zz)
+fn2() ---> # UnboundLocalError: local variable 'zz' referenced before assignment
+
+金句良言：除非你清楚的时候，global 会带来什么，并且明确的知道非global不行，否则不要使用global
+
+### 闭包
+
+
+
+
+
+
+
+
+
+
+
+
+
+
