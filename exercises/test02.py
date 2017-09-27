@@ -84,7 +84,9 @@
 #     print(locals()) # locals() 基于字典的访问局部，字典的键就是变量名，字典的值就是那些变量的值
 # test(4) # {'a_string': 'test', 'z': 1, 'arg': 4}
 # test('doulaixuexi') # {'a_string': 'test', 'z': 1, 'arg': 'doulaixuexi'}
-# print(globals()) # globals 函数返回一个全局变量的字典，包括所有导入的变量。 {...,'a_string': 'This is a global variable'，...}
+# print(globals())
+
+'''globals 函数返回一个全局变量的字典，包括所有导入的变量。 {...,'a_string': 'This is a global variable'，...}'''
 
 # 变量生存周期
 
@@ -97,25 +99,29 @@
 
 # 闭包(closure):是一种引用了外部变量的函数对象，无论该变量所处的作用域是否还存在于内存中。
 
+
 def generate_power_func(n):
-    print("id(n): %x" %(id(n)))
+    print("id(n): %X" % (id(n)))  # %X 无符号十六进制
+
     def nth_power(x):
         return x**n
-    print("id(nth_power): %x" % id(nth_power))
+    print("id(nth_power): %X" % id(nth_power))
     return nth_power
-kk = generate_power_func(4) # 调用函数，会生成一个nth_power函数对象；且将结果返回给一个变量kk
-print(repr(kk)) # repr() 函数将对象转化为供解释器读取的形式，返回一个对象的 string 格式
+
+
+kk = generate_power_func(4)  # 调用函数，会生成一个nth_power函数对象；且将结果返回给一个变量kk
+# print(repr(kk))  # repr() 函数将对象转化为供解释器读取的形式，返回一个对象的 string 格式
 '''
 id(n): 7287c710
 id(nth_power): 1a4715398c8
 '''
-del generate_power_func # 将函数 generate_power_func 函数从全局命名空间删除
-print(kk(2)) # 调用闭包函数 kk = 16
+del generate_power_func  # 将函数 generate_power_func 函数从全局命名空间删除
+print(kk(2))  # 调用闭包函数 kk = 16
+print(kk.__closure__)
+print(kk.__closure__[0].cell_contents)
 '''结论：函数对象nth_power是由generate_power_func产生的一个闭包，闭包会保留来自外围作用域变量的信息。'''
 
-print(kk.__closure__)
-
-
+'''************************************************************'''
 # def outer():
 #     x = 1
 #     def inner():
@@ -128,3 +134,46 @@ print(kk.__closure__)
 # # 对于那些不是闭包的函数对象来说，__closure__ 属性值为 None
 # print(type(foo.__closure__[0]))  # <class 'cell'>
 # print(foo.__closure__[0].cell_contents)  # 1
+
+'''************************************************************'''
+
+# def line_conf():
+#     def line(x):
+#         return 2 * x + 1
+#     print(line(5))
+
+# line_conf()
+
+'''************************************************************'''
+# def line_conf():
+#     b = 15
+#     def line(x):
+#         return 2*x+b
+#     return line
+
+# b = 5
+# my_line = line_conf()
+# print(my_line.__closure__)
+# print(my_line.__closure__[0].cell_contents)
+
+'''************************************************************'''
+# def line_conf(a, b):
+#     i = a * b # 20
+#     def line(x):
+#     	nonlocal i
+#     	i = i + x # 25
+#     	return i * x + b
+#     return line
+
+# line1 = line_conf(4, 5)
+# print(line1(5))
+
+
+def print_msg(msg):
+    '''This is the outer enclosing function'''
+    def printer():
+    '''This is the nested function'''
+        print(msg)
+
+# printer()
+print_msg("Hello"))
