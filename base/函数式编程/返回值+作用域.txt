@@ -105,16 +105,3 @@ def fn2():
 fn2() ---> # UnboundLocalError: local variable 'zz' referenced before assignment
 
 金句良言：除非你清楚的时候，global 会带来什么，并且明确的知道非global不行，否则不要使用global
-
-
-
-
-
-
-
-
-
-
-
-
-
