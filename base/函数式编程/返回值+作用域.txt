@@ -6,6 +6,7 @@ return作用：
 2.表示结束函数，return之后的语句将不会被执行
 
 #一个函数可以有多个renturn，执行到哪个return，由哪个return返回结果并结束函数
+
 def fn(x):
     for i in range(x): # x =10;i = 0
         if x > 3:
@@ -104,9 +105,6 @@ def fn2():
 fn2() ---> # UnboundLocalError: local variable 'zz' referenced before assignment
 
 金句良言：除非你清楚的时候，global 会带来什么，并且明确的知道非global不行，否则不要使用global
-
-### 闭包
-
 
 
 
