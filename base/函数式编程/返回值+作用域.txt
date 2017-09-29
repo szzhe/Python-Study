@@ -105,3 +105,77 @@ def fn2():
 fn2() ---> # UnboundLocalError: local variable 'zz' referenced before assignment
 
 金句良言：除非你清楚的时候，global 会带来什么，并且明确的知道非global不行，否则不要使用global
+
+# 查看内置函数
+print("内置函数为: ",dir(__builtins__) )
+
+局部作用域->外部作用域->全局作用域->Python内建的作用域
+
+# 全量：
+
+def f():
+    x = 0
+    def f1():
+        x = 1
+        def f2():
+            x = 2
+            def f3():
+                x = 3
+                print('目前在函数f3（）中，变量x的值为：',x)
+            print('目前在函数f2（）中，变量x的值为：',x)
+            f3()
+        print('目前在函数f1（）中，变量x的值为：',x) 
+        f2()
+    print('目前在函数f（）中，变量x的值为：',x) 
+    f1()
+f()
+
+目前在函数f（）中，变量x的值为： 0
+目前在函数f1（）中，变量x的值为： 1
+目前在函数f2（）中，变量x的值为： 2
+目前在函数f3（）中，变量x的值为： 3
+
+def f():
+    x = 0
+    def f1():
+        x = 1
+        def f2():
+            # x = 2
+            def f3():
+                # x = 3
+                print('目前在函数f3（）中，变量x的值为：',x)
+            print('目前在函数f2（）中，变量x的值为：',x)
+            f3()
+        print('目前在函数f1（）中，变量x的值为：',x) 
+        f2()
+    print('目前在函数f（）中，变量x的值为：',x) 
+    f1()
+f()
+
+目前在函数f（）中，变量x的值为： 0
+目前在函数f1（）中，变量x的值为： 1
+目前在函数f2（）中，变量x的值为： 1
+目前在函数f3（）中，变量x的值为： 1
+
+x = 8
+def f():
+    x = 0
+    print('目前在函数f()中，变量x的值为：',x) 
+    def f1():
+        global x
+        x = 1
+        print('目前在函数f1()中，变量x的值为：',x)
+    f1()
+print('现在函数f()中，变量x的值为 ',x)
+f()
+
+现在函数f()中，变量x的值为  8
+目前在函数f()中，变量x的值为： 0
+目前在函数f1()中，变量x的值为： 1
+
+def f(  ):
+    x = 8
+    def f1(  ):
+        print x
+    return f1
+f()
