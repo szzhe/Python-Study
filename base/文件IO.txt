@@ -340,3 +340,10 @@ f.seekable 能不能使用游标遍历
 # print(f.truncate()) # 清空文件内容 0
 # f.close()
 
+# f = open('hello.py', 'r+b')
+# f1 = open('test.txt', 'r+b')
+# buffer = bytearray() # 文件A写到文件B的过程
+# f.readinto(buffer)
+# f.close()
+# f1.close()
+
