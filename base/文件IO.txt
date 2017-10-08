@@ -1,0 +1,342 @@
+
+# 打开和关闭文件
+
+# f = open('F://Python//Python-LianXi//IO//test0.txt') 
+# FileNotFoundError: [Errno 2] No such file or directory: 'F://Python//Python-LianXi//IO//test0.txt'
+# f.close()
+
+# 文件对象的操作 r/w/x/a
+
+# f = open('F://Python//Python-LianXi//IO//test.txt') # mode=r 只读权限
+# print(f.read())
+# f.write('test->test') # io.UnsupportedOperation: not writable
+# f.close()
+# # print(f.read()) # ValueError: I/O operation on closed file.
+
+# f = open('F://Python//Python-LianXi//IO//test1.txt','w')
+# # print(f.read()) # io.UnsupportedOperation: not readable
+# f.write('test1->test11') # mode=w 即使打开文件后，不做任何操作，也会清空文件。并且，当文件不存在的时候，会创建该文件
+# f.close()
+# f = open('F://Python//Python-LianXi//IO//test1.txt')
+# print(f.read())
+
+# f = open('F://Python//Python-LianXi//IO//test2.txt','x') # mode=x 当文件存在的时候，会报错，不可读，可写。
+# FileExistsError: [Errno 17] File exists: 'F://Python//Python-LianXi//IO//test2.txt'
+# # f.read() # io.UnsupportedOperation: not readable
+# f.write('test2->test22') # mode=w 即使打开文件后，不做任何操作，也会清空文件。
+# f.close()
+# f = open('F://Python//Python-LianXi//IO//test2.txt')
+# print(f.read())
+
+# f = open('F://Python//Python-LianXi//IO//test3.txt','a') # mode=a 不可读，可写，并且是追加写
+# # print(f.read()) # io.UnsupportedOperation: not readable
+# f.write('abcd')
+# f.close()
+# f = open('F://Python//Python-LianXi//IO//test3.txt')
+# print(f.read())
+
+
+'''
+从控制读写的模式：
+-r 只读，文件必须存在
+-w 只写，清空文件，文件不存在会创建文件
+-x 只写，文件必须不存在
+-a 只写，追加到文件末尾，文件不存在会创建文件
+
+从其他方面来看：
+- 从读写方面来看，只有r是可读不可写的，其他都是可写不可读
+- 从文件不存在来看，只有r抛出异常，其他都是创建新文件
+- 从文件存在来看，只有x抛出异常
+- 从是否影响内容来看，只有w会清空文件
+'''
+
+''' ------------------------------------------------------------------------------------------------------------------------------------ '''
+
+# f = open("F://Python//Python-LianXi//IO//test5.txt",'rt') # mode=t 是以文本方式打开文件，等同于r
+# s = f.read() # 类Unix平台的换行符是\n，而windows平台用的是\r\n两个ASCII字符来表示换行。 rt模式下，python在读取文本时会自动把\r\n转换成\n.
+# print(s)
+# f.close()
+
+# f = open("F://Python//Python-LianXi//IO//test5.txt",'rb') # mode=t 是以二进制方式打开文件
+# s = f.read()
+# print(s)
+# f.close()
+
+'''
+mode = t, 按字符操作
+mode = b, 按字节操作
+'''
+
+# f = open("F://Python//Python-LianXi//IO//test5.txt",mode='wb')
+# f.write("马哥教育".encode())
+# f.close()
+# f = open("F://Python//Python-LianXi//IO//test5.txt",mode='rb') # 以二进制写入的文本，只能以二进制方式读取
+# print(f.read())
+
+''' ------------------------------------------------------------------------------------------------------------------------------------ '''
+
+# f = open("F://Python//Python-LianXi//IO//test5.txt",mode="rw") 
+# rwxa 四种模式同时只能有一个存在 ValueError: must have exactly one of create/read/write/append mode
+
+# f = open("F://Python//Python-LianXi//IO//test6.txt", mode="r+") # mode=r+ 可读可写，并且是一个追加写
+# print(f.read())
+# f.write('NB')
+# f.close()
+# f = open("F://Python//Python-LianXi//IO//test6.txt")
+# print(f.read())
+
+# f = open("F://Python//Python-LianXi//IO//test6.txt", mode="w+") # 同时也会先清空文件
+# print(f.read()) # 以w方式打开，不能读出。 w+可读写
+# f.write("Rainbow")
+# f.close()
+# f = open("F://Python//Python-LianXi//IO//test6.txt")
+# print(f.read())
+
+'''由于 w+ 会先清空文件，所以一般打开文件都会使用r+'''
+
+# f = open("F://Python//Python-LianXi//IO//test6.txt", mode="a+") 
+# print(f.read()) # @如果该文件已存在，文件指针将会放在文件的结尾
+# f.write("Grape")
+# f.close()
+# f = open("F://Python//Python-LianXi//IO//test6.txt")
+# print(f.read())
+
+# f = open("F://Python//Python-LianXi//IO//test6.txt", mode="+") # rwxa 模式有且仅有一种 存在于场上，并且加号不能单独使用
+# ValueError: Must have exactly one of create/read/write/append mode and at most one plus
+
+# 练习：
+# fd = open("F://Python//Python-LianXi//IO//test7.txt",'w+')  
+# fd.write('123')
+# fd.close()
+# fd = open("F://Python//Python-LianXi//IO//test7.txt",'r+') # @文件指针将会放在文件的开头，执行覆盖写操作
+# fd.write('456')
+# fd.close()  
+# fd = open("F://Python//Python-LianXi//IO//test7.txt",'a+')  
+# fd.write('789')
+# fd.close()
+# fd = open("F://Python//Python-LianXi//IO//test7.txt")  
+# print(fd.read()) # ---> 456789
+
+''' ----------------------------------------------- 文件指针 tell/seek ------------------------------------------------------------------- '''
+
+# f = open('F://Python//Python-LianXi//IO//test7.txt')
+# print(f.tell()) # 0
+# print(f.read()) # 456789
+# print(f.tell()) # 6
+# print(f.read()) # NULL
+# f.close()
+
+# f = open("F://Python//Python-LianXi//IO//test7.txt",'a')
+# print(f.tell())
+# f.close()
+
+''' 
+seek() 方法用于移动文件读取指针到指定位置
+语法：fileObject.seek(offset[, whence])
+offset -- 开始的偏移量，也就是代表需要移动偏移的字节数
+whence：可选，默认值为0。 给offset参数一个定义，表示要从哪个位置开始偏移；0代表从文件开头开始算起，1代表从当前位置开始算起，2代表从文件末尾算起。
+
+'''
+
+# f = open("F://Python//Python-LianXi//IO//test7.txt")
+# print(f.read()) # 465789
+# print(f.tell()) # 6
+# f.seek(0,0)
+# print(f.tell()) # 0
+# f.seek(2,0)
+# print(f.tell()) # 2
+# print(f.read()) # 6789
+# print("--- END ---")
+
+# f.seek(4,1) # io.UnsupportedOperation: can't do nonzero cur-relative seeks
+
+# f.seek(0,1) # 1代表从当前位置开始算起
+# print(f.tell()) # 6
+# f.seek(2,0)
+# print(f.tell()) # 2
+# # f.seek(2,1) # io.UnsupportedOperation: can't do nonzero cur-relative seeks
+# print(f.read()) # 6789
+# f.seek(0,2) # 2代表从文件末尾算起
+# print(f.tell())
+# f.close()
+
+'''
+mode = t
+ - 按字节移动文件指针
+ - 当whence(第二个参数)位，start(0)(默认值)，可以移动任意位置，offset可以是任意整数，(offset就是他的第一个参数)
+ - 当whence位current也就是1，或者是end也就是2的时候，offset只能为0
+'''
+
+# f = open("F://Python//Python-LianXi//IO//test7.txt")
+# # print(f.read()) # 456789
+# print(f.tell()) # 0
+# f.seek(3)
+# print(f.read())
+# f.seek(3)
+# print(f.read())
+# f.close()
+
+# f = open("F://Python//Python-LianXi//IO//test8.txt",'w')
+# f.write("马哥教育")
+# f.close()
+# f = open("F://Python//Python-LianXi//IO//test8.txt",'rb')
+# f.seek(2)
+# # print(f.read().decode('gbk')) # 哥教育
+# f.seek(2,1)
+# print(f.read().decode('gbk')) # 教育
+# f.seek(2,2)
+# print(f.read().decode('gbk')) # NULL
+# f.seek(-2,2)
+# print(f.read().decode('gbk')) # 育
+# f.close()
+
+# f.seek(-10,2)
+# print(f.read().decode('gbk')) # OSError: [Errno 22] Invalid argument
+
+'''
+mode = b
+ - 按字节移动文件指针
+ - 当whence start(0),可以移动任意位置，offset可以是任意整数
+ - 当whence位为currrnt也就是1，end也就是2的时候，也可以是任意整数
+'''
+
+### 总结
+
+'''
+移动文件指针：
+- 文件指针按字节操作
+- tell方法，返回当前文件指针位置
+- seek方法，移动文件指针
+- whence参数，start(0)，current(1)，end(2) 事实上，这些变量有我们的常量 SEEK_SET(0) SEEK_CUR(1) SEEK_END(2)
+    - SEEK_SET(0) 从0开始向后移动offset个字节
+    - SEEK_CUR(1) 从当前位置向后移动offset个字节
+    - SEEK_END(2) 从EOF向后移动offset个字节
+- offset 是整数
+- 当mode为t时，whence为SEEK_CUR或者SEEK_END，offset只能为0
+- 文件指针不能为负数(不是指偏移量，是文件指针的当前值)
+- 读文件的时候，从文件指针开始向后读
+- 写文件的时候，从min(EOF)处，开始往后写
+- 当以mode为a模式打开的时候，无论文件指针在何处，都从EOF开始写
+'''
+
+''' ------------------------------------------------ buffering ----------------------------------------------------------------------- '''
+
+# CentOS7上的操作
+
+# f = open("test.py",'wb')
+# f.write(b'abc')
+# # %cat test.py # NULL
+# f.flush() # 刷新缓冲区数据，将缓冲区中的数据立刻写入文件
+# # %cat test.py # abc
+# f.write(b"def")
+# # %cat test.py # abc
+# f.flush()
+# # %cat test.py # abcdef
+# f.close() # 自带flush
+
+# f = open("test.py",'wb',buffering=5)
+# f.write(b'abc')
+# # %cat test.py # NULL
+# f.write(b'def')
+# # %cat test.py # abc
+# f.write(b"g")
+# f.write(b"hi")
+# # %cat test.py # abcdefg
+# f.close()
+
+# f = open("test.py",'wb',buffering=5)
+# f.write(b'a')
+# f.write(b'b')
+# # %cat test.py # NULL
+# f.write(b"c")
+# f.write(b"de")
+# # %cat test.py # abcde
+# f.close()
+
+# f = open('test.py', 'wb', buffering=0)
+# f.write(b'abcdefg')
+# # %cat test.py # abcdefg
+# f.close()
+
+# import io
+# print(io.DEFAULT_BUFFER_SIZE) # 8192 默认缓冲区的大小
+
+# f = open('test.py', 'wt', buffering=1) # 只有当buffering=1的时候，才是line buffer
+# f.write('abc')
+# # %cat test.py # NULL
+# f.write('\n')
+# # %cat test.py # abc
+# f.close()
+
+# f = open('test.py', 'wt', buffering = 5) 
+# f.write('a' * io.DEFAULT_BUFFER_SIZE) # 8192
+# # %cat test.py # NULL
+# f.write('b')
+# # %cat test.py # aaaaa...aaab
+# f.close()
+# 结： buffering > 1 的时候，缓冲区大小为io.DEFAULT_BUFFER_SIZE, 当缓冲区满时，flush 缓冲区连同本次写入的内容
+
+# f = open('hello.py', 'wt', buffering=0) # ValueError: can't have unbuffered text I/O
+
+'''
+buffering = -1，默认值
+    二进制模式：io.DEFAULT_BUFFER_SIZE
+    文本模式：io.DEFAULT_BUFFER_SIZE
+buffering = 0
+    二进制模式：关闭buffering 也就是unbuffered
+    文本模式：不允许
+buffering = 1
+    二进制模式：1
+    文本模式： line buffer[\n]
+buffering > 1
+    二进制模式：buffering
+    文本模式：io.DEFAULT_BUFFER_SIZE
+    二进制模式：判断缓冲区甚于位置是否足够存放当前字节，如果不能，先flush，再把当前字节写入缓冲区，如果当前字节大于缓冲区大小，直接flush
+    文本模式：line buffering，遇到换行就flush，非line buffering，当前字节加缓冲区中的字节超出缓冲区大小，直接flush 缓冲区和当前字节
+'''
+
+# flush 和close 方法可以强制刷新缓冲区
+
+# cat是读文件，read可以读取到缓冲区|文件中的内容
+
+### 其他内容
+
+'''
+f.readable 可不可读
+f.writable 可不可写
+f.truncate 清空
+f.readline 按行
+f.readlines 整体读出，存到列表中区
+f.seekable 能不能使用游标遍历
+'''
+
+# f = open("F://Python//Python-LianXi//IO//test9.txt",'r+')
+# print(f.read(4)) # abcd
+# print(f.read(4)) # efgh 跟着指针走
+# print(f.read(-1)) # ijklmnopqrstuvwxyz
+# f.seek(0)
+# print(f.read()) # NULL
+# print(f.readline()) # abcdefghijklmnopqrstuvwxyz
+# f.seek(0)
+# print(f.readline(2)) # ab
+# print(f.readline(2)) # cd
+# print(f.readline(-1)) # efghijklmnopqrstuvwxyz
+# print(" --- END ---")
+
+# f.seek(0)
+# for line in f:
+#     print(line) # abcdefghijklmnopqrstuvwxyz
+# print(" --- END ---")
+
+# print(f.writable()) # True
+# f.write("szz\n")
+# f.writelines(['szz\n', 'szzszzszzszzszz\n'])
+# f.flush()
+# print(f.read())
+# print(" --- END ---")
+
+# print(f.seekable()) # True 能不能使用游标遍历
+# print(f.buffer) # 显示buffer的文件对象 <_io.BufferedRandom name='F://Python//Python-LianXi//IO//test9.txt'>
+# print(f.truncate()) # 清空文件内容 0
+# f.close()
+
