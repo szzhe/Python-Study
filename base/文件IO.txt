@@ -73,14 +73,14 @@ mode = b, 按字节操作
 # f = open("F://Python//Python-LianXi//IO//test5.txt",mode='rb') # 以二进制写入的文本，只能以二进制方式读取
 # print(f.read())
 
-f = open("D://test00.txt","wb")
+# f = open("D://test00.txt","wb")
 # f.write("中国心".encode("utf-8"))
 # f.close()
 # f = open("D://test00.txt",'rb')
-# print(f.read())
+# print(f.read()) # b'\xe4\xb8\xad\xe5\x9b\xbd\xe5\xbf\x83'
 # f.close()
 # f = open("D://test00.txt",'rb')
-# print(f.read().decode("utf-8"))
+# print(f.read().decode("utf-8")) # 中国心
 # f.close()
 
 ''' ------------------------------------------------------------------------------------------------------------------------------------ '''
