@@ -4,7 +4,7 @@ Centos7下载地址：http://www.centoscn.com/CentosSoft/iso/2016/1214/8276.html
 【一】安装pyenv步骤
 1.yum install -y git
 2.curl -L https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | bash
-3.cd /root/  vim bash_profile
+3.cd /root/  vim [.bash_profile]
 export PATH="~/.pyenv/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$( pyenv virtualenv-init -)"
@@ -54,6 +54,8 @@ pyenv update
 3)chmod +x Inte(自己的版本)
 4)./In(自己的版本)  获取信息** You can use http://127.0.0.1:41017 as license server    **
 
+启动破解文件路径：/usr/local/program/./IntelliJIDEALicenseServer_linux_amd64
+
 2.tar zxvf pycharm(tab 补全)
 1)tar zxvf pycharm-professional-2017.2.1.tar.gz
 2)mv pycharm /usr/local/program
@@ -61,6 +63,8 @@ pyenv update
   rm -rf Inter* 删除src目录下以Inter开头的所有文件
 4)cd /usr/local/program/pycharm-2017.2/bin
 5)./pycharm.sh
+
+启动pycharm程序路径:/usr/local/program/pycharm-2017.2/bin/./pycharm.sh
 
 1)/home/workspace/magedu，新建pycharm_learn
 2)pycharm->Open File or Project，定位到上面的pycharm_learn目录中去
