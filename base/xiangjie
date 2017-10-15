@@ -1,4 +1,26 @@
-1、join()函数
+
+
+1、split（）函数
+
+str.split(str="", num=string.count(str)).
+参数
+str -- 这是分隔符，默认情况下使用空格
+num -- 这是指定要作出的次数
+
+str = "this is string example....wow!!!"
+print(str.split())
+print(str.split('i', 1))
+print(str.split("i", 2))
+print(str.split("i", 3))
+print(str.split('w'))
+
+['this', 'is', 'string', 'example....wow!!!']
+['th', 's is string example....wow!!!']
+['th', 's ', 's string example....wow!!!']
+['th', 's ', 's str', 'ng example....wow!!!']
+['this is string example....', 'o', '!!!']
+
+2、join()函数
 
 #对序列进行操作（分别使用' '与':'作为分隔符）
  
